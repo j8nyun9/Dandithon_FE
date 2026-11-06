@@ -8,6 +8,7 @@ import { RankingPage } from './pages/League/RankingPage';
 import { AwardsPage } from './pages/Awards/AwardsPage';
 import { RecordsPage } from './pages/Records/RecordsPage';
 import { AboutPage } from './pages/About/AboutPage';
+import { PartnersPage } from './pages/Partners/PartnersPage';
 import { AdminPage } from './pages/Admin/AdminPage';
 
 export function App() {
@@ -24,6 +25,7 @@ export function App() {
           <Route path="awards" element={<AwardsPage />} />
           <Route path="records" element={<RecordsPage />} />
           <Route path="about" element={<AboutPage />} />
+          <Route path="partners" element={<PartnersPage />} />
         </Route>
         <Route path="admin" element={<AdminPage />} />
       </Routes>

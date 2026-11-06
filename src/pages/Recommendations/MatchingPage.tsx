@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Sparkles, MapPin, Clock, Info } from 'lucide-react';
 import activities from '../../mocks/activities.json';
 import type { Activity } from '../../types';
+import { TypeChips } from '../../components/common/Badges';
+import { CONTRIBUTION_TYPES } from '../../utils/contribution';
 
 const groups = [
   { key: 'offer', label: '내어놓을 수 있는 것', options: ['시간', '재능', '헌혈'] },
+  { key: 'type', label: '관심 있는 사회공헌 유형', options: CONTRIBUTION_TYPES.map(t => t.label) },
   { key: 'time', label: '사용 가능 시간', options: ['평일 오후', '주말 오전', '주말 오후', '1시간 이내'] },
-  { key: 'field', label: '관심 분야', options: ['환경', '교육', '복지', '문화', '의료'] },
 ] as const;
 
 const diffCls: Record<Activity['difficulty'], string> = {
@@ -16,17 +18,18 @@ const diffCls: Record<Activity['difficulty'], string> = {
 };
 
 export function MatchingPage() {
-  const [picked, setPicked] = useState<Record<string, string[]>>({ offer: ['시간', '재능'], time: ['주말 오전'], field: [] });
+  const [picked, setPicked] = useState<Record<string, string[]>>({ offer: ['시간', '재능'], type: [], time: ['주말 오전'] });
   const [shown, setShown] = useState(true);
 
   const toggle = (k: string, v: string) =>
     setPicked(p => ({ ...p, [k]: p[k].includes(v) ? p[k].filter(x => x !== v) : [...p[k], v] }));
 
   // TODO: 서버 AI 추천 API 연결 — AI는 DB에 등록된 행사만 추천하고 문장만 생성
+  const typeKeys = CONTRIBUTION_TYPES.filter(t => picked.type.includes(t.label)).map(t => t.key);
   const results = (activities as Activity[]).filter(
     a =>
       (!picked.offer.length || picked.offer.includes(a.offer)) &&
-      (!picked.field.length || picked.field.includes(a.category)),
+      (!typeKeys.length || a.types.some(t => typeKeys.includes(t))),
   );
 
   return (
@@ -35,7 +38,7 @@ export function MatchingPage() {
         <h2 className="flex items-center gap-2 font-bold text-primary">
           <Sparkles size={18} className="text-accent" /> AI 단디 매칭
         </h2>
-        <p className="mt-1 text-xs text-gray-500">각자 형편대로, 할 수 있는 만큼. 등록된 행사 중에서 골라 드려요.</p>
+        <p className="mt-1 text-xs text-gray-500">각자 형편대로, 할 수 있는 만큼. 인증 가능한 등록 활동 중에서 골라 드려요.</p>
         <div className="mt-6 flex flex-col gap-6">
           {groups.map(g => (
             <div key={g.key}>
@@ -71,12 +74,12 @@ export function MatchingPage() {
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-serif text-2xl font-bold text-primary">추천 활동 {shown ? results.length : 0}건</h2>
           <p className="flex items-center gap-1 text-xs text-gray-500">
-            <Info size={14} /> 등록된 행사 중에서만 추천합니다.
+            <Info size={14} /> 인증 가능한 등록 활동만 추천합니다.
           </p>
         </div>
         {shown && results.length === 0 && (
           <p className="rounded-xl bg-white p-6 text-sm text-gray-500">
-            조건에 맞는 등록 행사가 아직 없어요. 조건을 조금 넓혀 볼까요?
+            조건에 맞는 등록 활동이 아직 없어요. 조건을 조금 넓혀 볼까요?
           </p>
         )}
         <div className="grid gap-6 md:grid-cols-2">
@@ -85,10 +88,8 @@ export function MatchingPage() {
               <article key={a.id} className="flex flex-col rounded-xl border border-gray-200 bg-white p-6 transition hover:shadow-lg">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <p className="text-xs font-semibold text-accent-deep">
-                      {a.offer} · {a.category} · {a.mode}
-                    </p>
-                    <h3 className="mt-1 text-lg font-bold text-primary">{a.title}</h3>
+                    <TypeChips types={a.types} />
+                    <h3 className="mt-2 text-lg font-bold text-primary">{a.title}</h3>
                   </div>
                   <span className={`shrink-0 rounded-full px-2 py-1 text-xs font-semibold ${diffCls[a.difficulty]}`}>
                     {a.difficulty}
@@ -96,7 +97,7 @@ export function MatchingPage() {
                 </div>
                 <div className="mt-4 flex flex-col gap-1 text-sm text-gray-500">
                   <span className="flex items-center gap-2">
-                    <Clock size={14} /> {a.date} · {a.minutes}분
+                    <Clock size={14} /> {a.date} · {a.minutes}분 · {a.mode}
                   </span>
                   <span className="flex items-center gap-2">
                     <MapPin size={14} /> {a.place}

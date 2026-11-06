@@ -1,19 +1,18 @@
+import { useState } from 'react';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import league from '../../mocks/league.json';
 import type { School } from '../../types';
 import { DemoBadge } from '../../components/common/Badges';
 import { PageHeader, container } from '../../components/common/PageHeader';
+import { RadarHex } from '../../components/common/RadarHex';
+import { SeasonTimeline } from '../../components/common/SeasonTimeline';
 import { rankDelta } from '../../utils/format';
+import { CONTRIBUTION_TYPES, leagueAverage, strongestType } from '../../utils/contribution';
 
-// 단디 지수 = 30×(P/N) + 25×(R/N) + 30×(V/N) + 15×min(K/T, 1) — 계산은 서버, 여기선 표시만
-const items = [
-  { key: 'participation', label: '참여율', max: 30 },
-  { key: 'continuity', label: '지속 참여', max: 25 },
-  { key: 'volunteer', label: '시간·재능·헌혈', max: 30 },
-  { key: 'project', label: '공동 프로젝트', max: 15 },
-] as const;
+const schools = league.schools as School[];
+const avg = leagueAverage(schools);
 
-function Delta({ d }: { d: number }) {
+export function Delta({ d, light = false }: { d: number; light?: boolean }) {
   if (d > 0)
     return (
       <span className="flex items-center gap-1 text-sm font-semibold text-accent">
@@ -23,114 +22,120 @@ function Delta({ d }: { d: number }) {
     );
   if (d < 0)
     return (
-      <span className="flex items-center gap-1 text-sm text-gray-400">
+      <span className={`flex items-center gap-1 text-sm ${light ? 'text-paper/50' : 'text-gray-400'}`}>
         <TrendingDown size={16} />
         {-d}
       </span>
     );
-  return <Minus size={16} className="text-gray-300" />;
+  return <Minus size={16} className={light ? 'text-paper/40' : 'text-gray-300'} />;
 }
 
 export function RankingPage() {
-  const schools = league.schools as School[];
-  const podium = schools.slice(0, 3);
+  const [selected, setSelected] = useState(league.mySchoolId);
+  const sel = schools.find(s => s.id === selected)!;
 
   return (
     <>
       <PageHeader
         eyebrow="UNIVERSITY LEAGUE"
         title="대학 리그"
-        desc="개인이 아닌 학교 단위로만 겨룹니다. 얼마나 많이 냈는지가 아니라, 얼마나 많은 학생이 함께했는지를 봅니다."
+        desc="학기 단위로 겨루고, 학기 중간에 한 번 결산합니다. 얼마나 많이 했는지보다, 얼마나 많은 학생이 다양한 방식으로 함께했는지를 봅니다."
         right={
-          <div className="text-right text-sm text-paper/70">
-            <p>{league.season.name}</p>
-            <p className="font-serif text-2xl text-paper">
-              {league.season.week} / {league.season.totalWeeks}주차
-            </p>
+          <div className="w-full md:w-96">
+            <SeasonTimeline tone="dark" />
           </div>
         }
       />
 
       <div className={`${container} py-16`}>
-        {/* 시상대 */}
-        <div className="grid gap-6 md:grid-cols-3">
-          {podium.map(s => (
-            <div
-              key={s.id}
-              className={`rounded-xl p-6 ${s.rank === 1 ? 'navy-texture text-paper' : 'border border-gray-200 bg-white'}`}
-            >
-              <div className="flex items-center justify-between">
-                <span className={`font-serif text-5xl font-black ${s.rank === 1 ? 'text-accent' : 'text-gray-300'}`}>
-                  {s.rank}
-                </span>
-                <Delta d={rankDelta(s.rank, s.prevRank)} />
-              </div>
-              <p className={`mt-4 text-xl font-bold ${s.rank === 1 ? '' : 'text-primary'}`}>{s.name}</p>
-              <p className={`text-sm ${s.rank === 1 ? 'text-paper/60' : 'text-gray-400'}`}>참가자 {s.enrolled}명</p>
-              <p className="mt-4 text-3xl font-bold">{s.dandiIndex.toFixed(1)}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* 전체 표 */}
-        <div className="mt-6 flex items-center justify-between">
-          <p className="text-sm text-gray-500">등록 시범 참가 집단의 참여 성과입니다. 개인 순위는 집계하지 않습니다.</p>
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+          <p className="text-sm text-gray-500">
+            인증 가능한 사회공헌 활동만 집계한 등록 시범 참가 집단의 성과입니다. 개인 순위는 집계하지 않습니다.
+          </p>
           <DemoBadge />
         </div>
-        <div className="mt-4 overflow-x-auto rounded-xl border border-gray-200 bg-white">
-          <table className="w-full min-w-[760px] text-sm">
-            <thead className="bg-gray-50 text-left text-xs text-gray-500">
-              <tr>
-                <th className="px-6 py-4">순위</th>
-                <th className="px-4 py-4">학교</th>
-                <th className="px-4 py-4">변동</th>
-                {items.map(it => (
-                  <th key={it.key} className="px-4 py-4">
-                    {it.label} <span className="text-gray-300">/{it.max}</span>
-                  </th>
-                ))}
-                <th className="px-6 py-4 text-right">단디 지수</th>
-              </tr>
-            </thead>
-            <tbody>
-              {schools.map(s => {
-                const mine = s.id === league.mySchoolId;
+
+        <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
+          {/* 순위 표 */}
+          <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
+            <table className="w-full min-w-[560px] text-sm">
+              <thead className="bg-gray-50 text-left text-xs text-gray-500">
+                <tr>
+                  <th className="px-6 py-4">순위</th>
+                  <th className="px-4 py-4">학교</th>
+                  <th className="px-4 py-4">중간결산 대비</th>
+                  <th className="px-4 py-4">강점 유형</th>
+                  <th className="px-6 py-4 text-right">단디 지수</th>
+                </tr>
+              </thead>
+              <tbody>
+                {schools.map(s => {
+                  const mine = s.id === league.mySchoolId;
+                  const active = s.id === selected;
+                  return (
+                    <tr
+                      key={s.id}
+                      onClick={() => setSelected(s.id)}
+                      className={`cursor-pointer border-t border-gray-100 transition ${
+                        active ? 'bg-paper' : 'hover:bg-gray-50'
+                      }`}
+                    >
+                      <td className={`px-6 py-4 font-serif text-xl font-black ${s.rank <= 3 ? 'text-accent' : 'text-gray-300'}`}>
+                        {s.rank}
+                      </td>
+                      <td className="px-4 py-4 font-semibold text-gray-800">
+                        {s.name}
+                        {mine && <span className="ml-2 rounded bg-primary px-1 text-[10px] text-paper">우리 학교</span>}
+                        <span className="block text-xs font-normal text-gray-400">참가자 {s.enrolled}명</span>
+                      </td>
+                      <td className="px-4 py-4">
+                        <Delta d={rankDelta(s.rank, s.midRank)} />
+                      </td>
+                      <td className="px-4 py-4 text-xs text-accent-deep">{strongestType(s.hexagon).label}</td>
+                      <td className="px-6 py-4 text-right text-lg font-bold text-primary">{s.dandiIndex.toFixed(1)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* 육각형 */}
+          <div className="h-fit rounded-xl border border-gray-200 bg-white p-6 lg:sticky lg:top-24">
+            <div className="flex items-end justify-between">
+              <div>
+                <p className="text-xs text-gray-500">사회공헌 유형별 참여율</p>
+                <h2 className="font-serif text-2xl font-bold text-primary">{sel.name}</h2>
+              </div>
+              <div className="flex flex-col items-end gap-1 text-xs text-gray-500">
+                <span className="flex items-center gap-2">
+                  <span className="h-1 w-4 bg-primary" /> {sel.name.replace('학교', '')}
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="h-px w-4 border-t border-dashed border-gray-400" /> 리그 평균
+                </span>
+              </div>
+            </div>
+            <RadarHex values={sel.hexagon} compare={avg} className="mx-auto mt-4 w-full max-w-sm" />
+            <ul className="mt-4 grid grid-cols-2 gap-2 text-xs">
+              {CONTRIBUTION_TYPES.map(t => {
+                const diff = sel.hexagon[t.key] - avg[t.key];
                 return (
-                  <tr key={s.id} className={`border-t border-gray-100 ${mine ? 'bg-paper/60' : ''}`}>
-                    <td className={`px-6 py-4 font-serif text-xl font-black ${s.rank <= 3 ? 'text-accent' : 'text-gray-300'}`}>
-                      {s.rank}
-                    </td>
-                    <td className="px-4 py-4 font-semibold text-gray-800">
-                      {s.name}
-                      {mine && <span className="ml-2 rounded bg-primary px-1 text-[10px] text-paper">우리 학교</span>}
-                    </td>
-                    <td className="px-4 py-4">
-                      <Delta d={rankDelta(s.rank, s.prevRank)} />
-                    </td>
-                    {items.map(it => {
-                      const v = s.breakdown[it.key];
-                      return (
-                        <td key={it.key} className="px-4 py-4">
-                          <div className="flex items-center gap-2">
-                            <div className="h-2 w-16 rounded-full bg-gray-100">
-                              <div className="h-full rounded-full bg-primary-soft" style={{ width: `${(v / it.max) * 100}%` }} />
-                            </div>
-                            <span className="text-xs text-gray-500">{v.toFixed(1)}</span>
-                          </div>
-                        </td>
-                      );
-                    })}
-                    <td className="px-6 py-4 text-right text-lg font-bold text-primary">{s.dandiIndex.toFixed(1)}</td>
-                  </tr>
+                  <li key={t.key} className="flex justify-between rounded-md bg-gray-50 px-2 py-1">
+                    <span className="text-gray-600">{t.label}</span>
+                    <span className={diff >= 0 ? 'font-semibold text-primary' : 'text-gray-400'}>
+                      {diff >= 0 ? '+' : ''}
+                      {diff.toFixed(0)}%p
+                    </span>
+                  </li>
                 );
               })}
-            </tbody>
-          </table>
+            </ul>
+            <p className="mt-4 text-xs text-gray-400">
+              어느 하나로 정하기 어려운 활동은 두 유형에 반씩 반영합니다. 예) 연탄 나눔 = 나눔 ½ + 자원봉사 ½
+            </p>
+          </div>
         </div>
-        <p className="mt-4 text-xs text-gray-400">
-          단디 지수 = 30×참여율 + 25×지속 참여율(서로 다른 3일 이상) + 30×시간·재능·헌혈 참여율 + 15×공동 프로젝트
-          달성률(최대 1)
-        </p>
       </div>
     </>
   );

@@ -4,12 +4,20 @@ import { PageHeader, container } from '../../components/common/PageHeader';
 
 const steps = [
   { icon: Sparkles, title: '찾기', desc: '내어놓을 수 있는 것(시간·재능·헌혈)을 고르면 AI가 등록 행사를 추천합니다.' },
-  { icon: ShieldCheck, title: '인증하기', desc: '자기 신고 · 운영자 확인 · 공식 실적 확인, 세 단계로 구분해 기록합니다.' },
-  { icon: School, title: '함께 오르기', desc: '인증된 참여가 모여 우리 학교의 단디 지수와 리그 순위가 됩니다.' },
+  { icon: ShieldCheck, title: '인증하기', desc: '1365·VMS 실적을 연동하거나, 협력 기관 활동을 운영자가 확인합니다.' },
+  { icon: School, title: '함께 오르기', desc: '인증된 참여가 6개 유형 육각형과 단디 지수가 되어 학기 리그 순위를 만듭니다.' },
+];
+
+const verifyRoadmap = [
+  { phase: '지금', title: '1365 · VMS 연동', desc: '개인 동의를 받아 공개 API로 봉사 실적을 자동으로 가져옵니다.' },
+  { phase: '확장', title: '협력 기관 API', desc: '공개 API가 없는 기관은 협력 기관으로 등록하며 실적 API 제공을 요청합니다.' },
+  { phase: '향후', title: 'AI 인증 보조', desc: '확인서·헌혈증 판독과 이상 탐지를 AI가 돕고, 최종 판단은 운영자가 합니다.' },
 ];
 
 const principles = [
+  '인증 가능한 사회공헌 활동만 집계합니다. 자기 신고는 점수에 반영하지 않습니다.',
   '개인 랭킹은 만들지 않습니다. 비교는 학교 단위로만 합니다.',
+  '한 학기에 한 번도 충분합니다. 여러 차시로 이어지는 활동은 한 번의 참여로 인정합니다.',
   '많이 낸 사람을 앞세우지 않습니다. 한 시간도, 한 번의 헌혈도 같은 참여입니다.',
   '헌혈은 권할 뿐 강요하지 않습니다. 건강 상태에 따라 언제든 다른 방식으로 참여할 수 있습니다.',
   '소비·지출 데이터는 수집하지 않습니다.',
@@ -69,19 +77,42 @@ export function AboutPage() {
         </div>
       </section>
 
+      <section className={`${container} pt-16`}>
+        <p className="text-xs font-semibold tracking-[0.3em] text-accent">VERIFICATION</p>
+        <h2 className="mt-1 font-serif text-3xl font-bold text-primary">인증은 이렇게 넓혀 갑니다</h2>
+        <ol className="mt-6 grid gap-6 md:grid-cols-3">
+          {verifyRoadmap.map((v, i) => (
+            <li
+              key={v.title}
+              className={`rounded-xl p-6 ${i === 0 ? 'navy-texture text-paper' : 'border border-gray-200 bg-white'}`}
+            >
+              <span
+                className={`rounded-full px-2 py-1 text-xs font-semibold ${
+                  i === 0 ? 'bg-accent text-white' : 'bg-gray-100 text-gray-600'
+                }`}
+              >
+                {v.phase}
+              </span>
+              <p className={`mt-4 text-lg font-bold ${i === 0 ? '' : 'text-primary'}`}>{v.title}</p>
+              <p className={`mt-2 text-sm ${i === 0 ? 'text-paper/75' : 'text-gray-600'}`}>{v.desc}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
       <section className={`${container} py-16`}>
         <div className="grid items-center gap-6 rounded-xl border border-gray-200 bg-white p-6 md:grid-cols-[auto_1fr_auto] md:p-8">
           <FileBarChart size={40} className="text-accent-deep" />
           <div>
             <p className="text-xs font-semibold tracking-[0.3em] text-accent">FOR PARTNERS</p>
-            <h3 className="mt-1 text-xl font-bold text-primary">기업·기관 파트너를 위한 검증된 성과 리포트</h3>
+            <h3 className="mt-1 text-xl font-bold text-primary">기관·기업 파트너를 위한 성과 리포트와 참여 인사이트</h3>
             <p className="mt-2 text-sm text-gray-600">
-              승인된 봉사 인원·시간, 재능 나눔 건수, 헌혈 참여 횟수, 공동 프로젝트 달성률을 인증 등급별로 집계해 제공합니다.
-              개인 식별 정보와 개인별 이력은 제공하지 않습니다.
+              검증된 성과와 함께, 대학생이 어떤 활동에 관심을 갖고 어디서 멈추는지 익명 집계로 제공합니다. 개인 식별 정보와
+              개인별 이력은 제공하지 않습니다.
             </p>
           </div>
-          <Link to="/league" className="flex items-center gap-2 font-semibold text-primary hover:text-accent">
-            리그 보기 <ArrowRight size={16} />
+          <Link to="/partners" className="flex items-center gap-2 font-semibold text-primary hover:text-accent">
+            파트너 안내 <ArrowRight size={16} />
           </Link>
         </div>
       </section>

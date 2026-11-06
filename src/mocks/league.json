@@ -1,106 +1,20 @@
 {
   "season": {
-    "name": "2026 가을 시즌",
-    "week": 3,
-    "totalWeeks": 8,
+    "name": "2026-2학기 시즌",
+    "week": 10,
+    "totalWeeks": 16,
+    "midWeek": 8,
     "isDemo": true
   },
   "mySchoolId": "knu",
-  "project": {
-    "title": "대구·경북 겨울 헌혈 릴레이",
-    "current": 312,
-    "target": 500,
-    "unit": "회"
-  },
+  "project": { "title": "대구·경북 겨울 헌혈 릴레이", "current": 312, "target": 500, "unit": "회" },
   "schools": [
-    {
-      "id": "kmu",
-      "name": "계명대학교",
-      "rank": 1,
-      "prevRank": 2,
-      "dandiIndex": 78.4,
-      "enrolled": 120,
-      "breakdown": {
-        "participation": 26.5,
-        "continuity": 17.1,
-        "volunteer": 22,
-        "project": 12.8
-      }
-    },
-    {
-      "id": "knu",
-      "name": "경북대학교",
-      "rank": 2,
-      "prevRank": 3,
-      "dandiIndex": 74.9,
-      "enrolled": 150,
-      "breakdown": {
-        "participation": 25.2,
-        "continuity": 18.3,
-        "volunteer": 19.4,
-        "project": 12
-      }
-    },
-    {
-      "id": "ynu",
-      "name": "영남대학교",
-      "rank": 3,
-      "prevRank": 1,
-      "dandiIndex": 71.2,
-      "enrolled": 140,
-      "breakdown": {
-        "participation": 24,
-        "continuity": 15,
-        "volunteer": 20.1,
-        "project": 12.1
-      }
-    },
-    {
-      "id": "dcu",
-      "name": "대구가톨릭대학교",
-      "rank": 4,
-      "prevRank": 4,
-      "dandiIndex": 63.5,
-      "enrolled": 90,
-      "breakdown": {
-        "participation": 22.3,
-        "continuity": 12.6,
-        "volunteer": 17,
-        "project": 11.6
-      }
-    },
-    {
-      "id": "dgu",
-      "name": "대구대학교",
-      "rank": 5,
-      "prevRank": 6,
-      "dandiIndex": 58,
-      "enrolled": 100,
-      "breakdown": {
-        "participation": 20.1,
-        "continuity": 11.4,
-        "volunteer": 15.5,
-        "project": 11
-      }
-    },
-    {
-      "id": "kiu",
-      "name": "경일대학교",
-      "rank": 6,
-      "prevRank": 5,
-      "dandiIndex": 52.7,
-      "enrolled": 70,
-      "breakdown": {
-        "participation": 18.9,
-        "continuity": 10.2,
-        "volunteer": 13.2,
-        "project": 10.4
-      }
-    }
+    { "id": "kmu", "name": "계명대학교", "rank": 1, "midRank": 2, "dandiIndex": 78.4, "enrolled": 120, "hexagon": { "volunteer": 62, "mentoring": 48, "community": 40, "sharing": 35, "scholarship": 18, "blood": 30 } },
+    { "id": "knu", "name": "경북대학교", "rank": 2, "midRank": 3, "dandiIndex": 74.9, "enrolled": 150, "hexagon": { "volunteer": 55, "mentoring": 42, "community": 38, "sharing": 30, "scholarship": 22, "blood": 58 } },
+    { "id": "ynu", "name": "영남대학교", "rank": 3, "midRank": 1, "dandiIndex": 71.2, "enrolled": 140, "hexagon": { "volunteer": 58, "mentoring": 35, "community": 45, "sharing": 40, "scholarship": 15, "blood": 32 } },
+    { "id": "dcu", "name": "대구가톨릭대학교", "rank": 4, "midRank": 4, "dandiIndex": 63.5, "enrolled": 90, "hexagon": { "volunteer": 40, "mentoring": 30, "community": 28, "sharing": 55, "scholarship": 20, "blood": 25 } },
+    { "id": "dgu", "name": "대구대학교", "rank": 5, "midRank": 6, "dandiIndex": 58.0, "enrolled": 100, "hexagon": { "volunteer": 38, "mentoring": 45, "community": 25, "sharing": 22, "scholarship": 26, "blood": 20 } },
+    { "id": "kiu", "name": "경일대학교", "rank": 6, "midRank": 5, "dandiIndex": 52.7, "enrolled": 70, "hexagon": { "volunteer": 30, "mentoring": 22, "community": 35, "sharing": 25, "scholarship": 12, "blood": 28 } }
   ],
-  "contributions": {
-    "hours": 1842,
-    "talent": 126,
-    "blood": 312
-  }
+  "contributions": { "hours": 1842, "talent": 126, "blood": 312 }
 }

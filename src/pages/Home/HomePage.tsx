@@ -2,15 +2,18 @@ import { ArrowRight, BarChart3, Trophy, BookOpen, Leaf, TrendingUp, Clock, MapPi
 import { Link } from 'react-router-dom';
 import league from '../../mocks/league.json';
 import activities from '../../mocks/activities.json';
-import type { Activity } from '../../types';
-import { DemoBadge } from '../../components/common/Badges';
+import type { Activity, School } from '../../types';
+import { DemoBadge, TypeChips } from '../../components/common/Badges';
 import { HeritageBuilding } from '../../components/common/HeritageBuilding';
 import { container } from '../../components/common/PageHeader';
+import { RadarHex } from '../../components/common/RadarHex';
+import { SeasonTimeline } from '../../components/common/SeasonTimeline';
 import { rankDelta } from '../../utils/format';
+import { strongestType } from '../../utils/contribution';
 
 const features = [
-  { icon: BarChart3, title: '대학 리그', desc: '시즌별 학교 간 선의 경쟁', to: '/league' },
-  { icon: Trophy, title: '다양한 시상', desc: '여러 부문의 성취 인정', to: '/awards' },
+  { icon: BarChart3, title: '대학 리그', desc: '학기 단위 학교 간 선의 경쟁', to: '/league' },
+  { icon: Trophy, title: '다양한 시상', desc: '중간·최종결산, 유형별 부문상', to: '/awards' },
   { icon: BookOpen, title: '디지털 의연록', desc: '내어놓은 것을 기록으로', to: '/records' },
   { icon: Leaf, title: 'AI 활동 추천', desc: '내 시간과 재능에 맞는 활동', to: '/activities' },
 ];
@@ -105,41 +108,49 @@ function SectionHead({ eyebrow, title, to, cta }: { eyebrow: string; title: stri
 }
 
 function LeagueSection() {
-  const my = league.schools.find(s => s.id === league.mySchoolId)!;
-  const delta = rankDelta(my.rank, my.prevRank);
-  const top = league.schools.slice(0, 5);
+  const schools = league.schools as School[];
+  const my = schools.find(s => s.id === league.mySchoolId)!;
+  const delta = rankDelta(my.rank, my.midRank);
+  const top = schools.slice(0, 5);
 
   return (
     <section className={`${container} py-16`}>
-      <SectionHead eyebrow="UNIVERSITY LEAGUE" title="이번 시즌 대학 리그" to="/league" cta="전체 순위" />
-      <div className="grid gap-6 lg:grid-cols-[1fr_1.6fr]">
-        <div className="navy-texture flex flex-col justify-between rounded-xl p-6 text-paper">
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-paper/60">우리 학교</p>
-            <DemoBadge />
-          </div>
-          <div className="mt-6">
-            <p className="text-2xl font-bold">{my.name}</p>
-            <p className="mt-2 font-serif text-7xl font-black">
-              {my.rank}
-              <span className="ml-2 text-2xl font-medium">위</span>
-            </p>
-            {delta > 0 && (
-              <p className="mt-2 flex items-center gap-1 font-semibold text-accent">
-                <TrendingUp size={18} /> 지난주보다 {delta}계단 상승
+      <SectionHead eyebrow="UNIVERSITY LEAGUE" title="이번 학기 대학 리그" to="/league" cta="전체 순위" />
+      <div className="mb-6 rounded-xl border border-gray-200 bg-white px-6 pt-4 pb-2">
+        <SeasonTimeline />
+      </div>
+      <div className="grid gap-6 lg:grid-cols-[1.2fr_1.4fr]">
+        <div className="navy-texture grid grid-cols-[1fr_auto] gap-4 rounded-xl p-6 text-paper">
+          <div className="flex flex-col justify-between">
+            <div>
+              <p className="text-sm text-paper/60">우리 학교</p>
+              <p className="mt-4 text-2xl font-bold">{my.name}</p>
+              <p className="mt-2 font-serif text-7xl font-black">
+                {my.rank}
+                <span className="ml-2 text-2xl font-medium">위</span>
               </p>
-            )}
+              {delta > 0 && (
+                <p className="mt-2 flex items-center gap-1 text-sm font-semibold text-accent">
+                  <TrendingUp size={16} /> 중간결산보다 {delta}계단 상승
+                </p>
+              )}
+            </div>
+            <div className="mt-6 border-t border-white/15 pt-4">
+              <span className="text-sm text-paper/60">단디 지수</span>
+              <p className="text-3xl font-bold">{my.dandiIndex.toFixed(1)}</p>
+            </div>
           </div>
-          <div className="mt-6 flex items-end justify-between border-t border-white/15 pt-4">
-            <span className="text-sm text-paper/60">단디 지수</span>
-            <span className="text-3xl font-bold">{my.dandiIndex.toFixed(1)}</span>
+          <div className="flex w-48 flex-col items-center justify-center">
+            <RadarHex values={my.hexagon} tone="dark" labels={false} className="w-full" />
+            <p className="mt-2 text-xs text-paper/60">강점: {strongestType(my.hexagon).label}</p>
           </div>
         </div>
 
         <div className="rounded-xl border border-gray-200 bg-white p-6">
-          <p className="mb-4 text-sm text-gray-500">
-            {league.season.name} · {league.season.week}/{league.season.totalWeeks}주차 · 등록 시범 참가 집단의 참여 성과
-          </p>
+          <div className="mb-4 flex items-center justify-between">
+            <p className="text-sm text-gray-500">인증된 활동 기준 · 등록 시범 참가 집단</p>
+            <DemoBadge />
+          </div>
           <ul className="flex flex-col gap-4">
             {top.map(s => (
               <li key={s.id} className="grid grid-cols-[32px_1fr_64px] items-center gap-4">
@@ -228,9 +239,7 @@ function ActivitySection() {
       <div className="grid gap-6 md:grid-cols-3">
         {list.map(a => (
           <article key={a.id} className="flex flex-col rounded-xl border border-gray-200 bg-white p-6 transition hover:shadow-lg">
-            <p className="text-xs font-semibold text-accent-deep">
-              {a.offer} · {a.category} · {a.mode}
-            </p>
+            <TypeChips types={a.types} />
             <h3 className="mt-2 text-lg font-bold text-primary">{a.title}</h3>
             <div className="mt-4 flex flex-col gap-1 text-sm text-gray-500">
               <span className="flex items-center gap-2">
@@ -261,7 +270,9 @@ function CtaBanner() {
         <h2 className="mt-4 font-serif text-3xl font-bold md:text-4xl">
           당신이 내어놓을 수 있는 것은 <span className="text-accent">무엇인가요?</span>
         </h2>
-        <p className="mt-4 text-paper/75">한 시간이어도, 한 번이어도 충분합니다. 할 수 있는 만큼이면 됩니다.</p>
+        <p className="mt-4 text-paper/75">
+          한 학기에 한 번이어도 충분합니다. 여러 차시로 이어지는 활동도 한 번의 참여로 인정합니다.
+        </p>
         <div className="mt-8 flex flex-wrap justify-center gap-4">
           <Link
             to="/activities"

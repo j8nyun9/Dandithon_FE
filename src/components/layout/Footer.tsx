@@ -30,6 +30,11 @@ export function Footer() {
           <ul className="flex flex-col gap-2 text-sm">
             <li>2026 단디톤 해커톤 프로젝트</li>
             <li>
+              <Link to="/partners" className="hover:text-paper">
+                기관·기업 파트너
+              </Link>
+            </li>
+            <li>
               <Link to="/admin" className="hover:text-paper">
                 운영자 페이지
               </Link>
