@@ -1,1 +1,35 @@
-:root{font-family:system-ui,sans-serif;color:#191f28;background:#f2f4f6}body{margin:0}main{max-width:440px;margin:auto;padding:48px 24px}small{color:#3182f6;font-weight:700}h1{font-size:34px;line-height:1.35}h2{margin-top:40px;font-size:21px}p,footer{color:#6b7684}article{background:white;border-radius:20px;padding:24px;margin:12px 0}article p{margin-bottom:0}footer{font-size:12px;margin-top:40px}
+@import "tailwindcss";
+
+/* 디자인 토큰 — 임의 색상 하드코딩 금지, 아래 토큰만 사용 */
+@theme {
+  --color-primary: #1e2a4a;
+  --color-primary-deep: #141d35;
+  --color-primary-soft: #2c3a60;
+  --color-accent: #f26b1d;
+  --color-accent-deep: #b8461a;
+  --color-paper: #f5efe0;
+  --color-paper-deep: #e8dec6;
+  --color-ink: #2a2620;
+
+  --font-sans: "Pretendard Variable", Pretendard, system-ui, sans-serif;
+  --font-serif: "Noto Serif KR", serif;
+}
+
+html, body { background: var(--color-gray-200); }
+body { font-family: var(--font-sans); color: var(--color-gray-900); -webkit-font-smoothing: antialiased; }
+
+/* 호외용 종이 질감 */
+.paper-texture {
+  background-color: var(--color-paper);
+  background-image:
+    radial-gradient(circle at 20% 30%, rgb(0 0 0 / 0.025) 0 1px, transparent 1px),
+    radial-gradient(circle at 70% 80%, rgb(0 0 0 / 0.03) 0 1px, transparent 1px);
+  background-size: 6px 6px, 9px 9px;
+}
+/* 남색 히어로 질감 */
+.navy-texture {
+  background-color: var(--color-primary);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgb(255 255 255 / 0.04), transparent 40%),
+    radial-gradient(circle at 85% 90%, rgb(0 0 0 / 0.25), transparent 50%);
+}

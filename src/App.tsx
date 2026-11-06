@@ -1,8 +1,32 @@
-import { useEffect, useState } from 'react';
-import { getActivities, type Activity } from './services/api';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { SiteShell } from './components/layout/SiteShell';
+import { HomePage } from './pages/Home/HomePage';
+import { ActivitiesLayout } from './pages/Activities/ActivitiesLayout';
+import { MatchingPage } from './pages/Recommendations/MatchingPage';
+import { VerifyPage } from './pages/Verification/VerifyPage';
+import { RankingPage } from './pages/League/RankingPage';
+import { AwardsPage } from './pages/Awards/AwardsPage';
+import { RecordsPage } from './pages/Records/RecordsPage';
+import { AboutPage } from './pages/About/AboutPage';
+import { AdminPage } from './pages/Admin/AdminPage';
+
 export function App() {
-  const [activities, setActivities] = useState<Activity[]>([]);
-  const [status, setStatus] = useState('활동을 불러오는 중이에요');
-  useEffect(() => {getActivities().then(data => {setActivities(data);setStatus('백엔드 연결 완료');}).catch(() => setStatus('백엔드 실행 상태를 확인해 주세요'));}, []);
-  return <main><small>단디보상운동</small><h1>작은 실천을<br/>함께 만드는 변화로</h1><p>{status}</p><h2>오늘의 실천</h2>{activities.map(activity => <article key={activity.id}><strong>{activity.title}</strong><p>{activity.minutes}분 · {activity.points}점</p></article>)}<footer>프론트엔드 · 백엔드 협업 시작 화면</footer></main>;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route element={<SiteShell />}>
+          <Route index element={<HomePage />} />
+          <Route path="activities" element={<ActivitiesLayout />}>
+            <Route index element={<MatchingPage />} />
+            <Route path="verify" element={<VerifyPage />} />
+          </Route>
+          <Route path="league" element={<RankingPage />} />
+          <Route path="awards" element={<AwardsPage />} />
+          <Route path="records" element={<RecordsPage />} />
+          <Route path="about" element={<AboutPage />} />
+        </Route>
+        <Route path="admin" element={<AdminPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }

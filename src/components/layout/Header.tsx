@@ -1,0 +1,90 @@
+import { useState } from 'react';
+import { Bell, Menu, X } from 'lucide-react';
+import { Link, NavLink } from 'react-router-dom';
+
+export const navItems = [
+  { to: '/', label: '홈' },
+  { to: '/activities', label: '활동하기' },
+  { to: '/league', label: '대학 리그' },
+  { to: '/awards', label: '시상' },
+  { to: '/records', label: '의연록' },
+  { to: '/about', label: '소개' },
+];
+
+export function Logo({ light = true }: { light?: boolean }) {
+  return (
+    <Link to="/" className={`flex items-center gap-2 font-serif text-xl font-bold ${light ? 'text-paper' : 'text-primary'}`}>
+      <svg viewBox="0 0 24 24" className="size-6" aria-hidden="true">
+        <g fill="currentColor">
+          {[0, 60, 120, 180, 240, 300].map(r => (
+            <ellipse key={r} cx="12" cy="6" rx="3" ry="5" transform={`rotate(${r} 12 12)`} opacity="0.9" />
+          ))}
+          <circle cx="12" cy="12" r="2.4" className="fill-accent" />
+        </g>
+      </svg>
+      단디보상운동
+    </Link>
+  );
+}
+
+export function Header() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <header className="navy-texture sticky top-0 z-30 border-b border-white/10">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+        <Logo />
+
+        <nav className="hidden h-full items-center gap-6 md:flex">
+          {navItems.map(n => (
+            <NavLink
+              key={n.to}
+              to={n.to}
+              end={n.to === '/'}
+              className={({ isActive }) =>
+                `relative flex h-full items-center px-2 text-sm transition ${
+                  isActive ? 'font-semibold text-paper' : 'text-paper/70 hover:text-paper'
+                }`
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  {n.label}
+                  {isActive && <span className="absolute inset-x-0 bottom-4 h-px bg-paper" />}
+                </>
+              )}
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-2">
+          <button aria-label="알림" className="hidden p-2 text-paper/80 hover:text-paper md:block">
+            <Bell size={18} />
+          </button>
+          <button className="rounded-md bg-paper px-4 py-1 text-sm font-semibold text-primary">로그인</button>
+          <button aria-label="메뉴" className="p-2 text-paper md:hidden" onClick={() => setOpen(o => !o)}>
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </div>
+
+      {open && (
+        <nav className="border-t border-white/10 px-6 pb-4 md:hidden">
+          {navItems.map(n => (
+            <NavLink
+              key={n.to}
+              to={n.to}
+              end={n.to === '/'}
+              onClick={() => setOpen(false)}
+              className={({ isActive }) =>
+                `block border-b border-white/10 py-4 text-sm ${isActive ? 'font-semibold text-accent' : 'text-paper/80'}`
+              }
+            >
+              {n.label}
+            </NavLink>
+          ))}
+        </nav>
+      )}
+    </header>
+  );
+}

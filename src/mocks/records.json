@@ -1,0 +1,8 @@
+[
+  { "id": "r1", "type": "time", "title": "신천 플로깅 데이 참여 (1.5시간)", "date": "11월 2일", "status": "approved", "level": "official", "submitter": "김OO", "school": "경북대학교" },
+  { "id": "r2", "type": "talent", "title": "지역아동센터 수학 멘토링 (2시간)", "date": "11월 5일", "status": "approved", "level": "operator", "submitter": "김OO", "school": "경북대학교" },
+  { "id": "r3", "type": "blood", "title": "교내 헌혈버스 전혈 헌혈", "date": "11월 6일", "status": "pending", "level": "operator", "submitter": "김OO", "school": "경북대학교" },
+  { "id": "r4", "type": "talent", "title": "요양원 기타 연주", "date": "11월 4일", "status": "rejected", "level": "operator", "submitter": "김OO", "school": "경북대학교" },
+  { "id": "r5", "type": "time", "title": "연탄 나눔 봉사 (3시간)", "date": "11월 5일", "status": "pending", "level": "operator", "submitter": "이OO", "school": "경북대학교" },
+  { "id": "r6", "type": "blood", "title": "헌혈의 집 성분 헌혈", "date": "11월 6일", "status": "pending", "level": "operator", "submitter": "박OO", "school": "경북대학교" }
+]
