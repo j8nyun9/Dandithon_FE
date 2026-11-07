@@ -1,13 +1,13 @@
 import {useEffect,useState} from 'react';
 import {Link} from 'react-router-dom';
 import {Sparkles,Clock,Info} from 'lucide-react';
-import {api,post,session,type Mission} from '../../services/api';
+import {api,post,session,contractApi,type Mission} from '../../services/api';
 import {CONTRIBUTION_TYPES} from '../../utils/contribution';
 type Recommendation={id:number;reason:string};
 export function MatchingPage(){
  const current=session();
  const [missions,setMissions]=useState<Mission[]>([]),[selected,setSelected]=useState<string[]>([]),[recs,setRecs]=useState<Recommendation[]|null>(null),[mode,setMode]=useState(''),[error,setError]=useState(''),[applied,setApplied]=useState<number[]>([]),[notice,setNotice]=useState(''),[recommending,setRecommending]=useState(false);
- useEffect(()=>{Promise.all([api<Mission[]>('/missions'),current?.role==='student'?api<number[]>('/me/applications'):Promise.resolve([])]).then(([m,a])=>{setMissions(m);setApplied(a);}).catch(e=>setError(e.message));},[]);
+ useEffect(()=>{Promise.all([api<Mission[]>('/missions'),current?.role==='student'?contractApi.participations():Promise.resolve([])]).then(([m,a])=>{setMissions(m);setApplied(a.filter(p=>p.applied_at!==null).map(p=>p.mission_id));}).catch(e=>setError(e.message));},[]);
  async function recommend(){try{setRecommending(true);setError('');const result=await post<{mode:string;result:{recommendations:Recommendation[]}}>('/ai/recommend',{profile:{interests:selected}});setMode(result.mode);setRecs(result.result.recommendations);}catch(e){setError(e instanceof Error?e.message:'추천 실패');}finally{setRecommending(false);}}
  async function click(id:number){const tab=window.open('about:blank','_blank');try{const result=await post<{apply_url:string}>(`/missions/${id}/click`);if(tab){tab.location.href=result.apply_url;}else setError('팝업이 차단되었습니다. 팝업 허용 후 다시 시도하세요.');}catch(e){tab?.close();setError(e instanceof Error?e.message:'클릭 기록 실패');}}
  async function confirmApplication(id:number){if(!window.confirm('기관의 공식 신청 절차를 완료했나요? 이 표시는 본인의 기록이며 기관의 신청 확인은 아닙니다.'))return;try{await post(`/missions/${id}/application-confirmation`);setApplied(v=>v.includes(id)?v:[...v,id]);setMissions(v=>v.filter(m=>m.id!==id));setRecs(v=>v?.filter(r=>r.id!==id)??null);setNotice('신청 완료를 표시했습니다. 실제 신청 여부와 활동 완료는 기관에서 확인합니다.');}catch(e){setError(e instanceof Error?e.message:'신청 표시 실패');}}
