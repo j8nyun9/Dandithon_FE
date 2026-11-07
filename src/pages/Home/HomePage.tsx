@@ -62,7 +62,7 @@ function Hero() {
               <span className="mt-2 ml-auto block h-px w-16 bg-paper/60" />
             </div>
           </div>
-          <HeritageBuilding className="absolute bottom-0 -left-6 w-[115%] drop-shadow-[0_24px_24px_rgb(0_0_0/0.45)] md:left-4 md:w-full" />
+          <HeritageBuilding className="absolute right-0 bottom-0 w-full max-w-[390px] drop-shadow-[0_24px_24px_rgb(0_0_0/0.45)] md:right-auto md:left-4 md:max-w-none" />
         </div>
       </div>
     </section>
