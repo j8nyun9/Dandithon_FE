@@ -64,7 +64,7 @@ export function Header() {
           <button aria-label="알림" className="hidden p-2 text-paper/80 hover:text-paper md:block">
             <Bell size={18} />
           </button>
-          {current ? <button onClick={() => setSession(null)} className="rounded-md bg-paper px-4 py-1 text-sm font-semibold text-primary">로그아웃 ({current.role})</button> : <Link to="/login" className="rounded-md bg-paper px-4 py-1 text-sm font-semibold text-primary">로그인</Link>}
+          {current ? <button onClick={() => setSession(null)} className="rounded-md bg-paper px-4 py-1 text-sm font-semibold text-primary">로그아웃 ({current.name || current.role})</button> : <Link to="/login" className="rounded-md bg-paper px-4 py-1 text-sm font-semibold text-primary">로그인</Link>}
           <button aria-label="메뉴" className="p-2 text-paper md:hidden" onClick={() => setOpen(o => !o)}>
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>

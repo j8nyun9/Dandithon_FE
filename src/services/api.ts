@@ -1,5 +1,5 @@
 export type Role = 'student' | 'admin' | 'partner';
-export type Session = { token: string; role: Role; user_id: number; school_id:number|null; expires_in: number };
+export type Session = { token: string; role: Role; user_id: number; school_id:number|null; name?:string|null; expires_in: number };
 export type Mission = { id:number; title:string; notice:string; eligibility:string; application_period:string; application_note:string; contribution_value:number; completion_policy:string; weights:Record<string,number>; source_url:string; apply_url:string; is_demo:boolean; application_start:string|null; application_end:string|null };
 export type Verification = { id:number; mission_id:number; user_id:number; status:string; title:string; source:string|null; external_record_id:string|null };
 export type League = { semester_id:number; rules:string; schools:{school_id:number;school:string;overall:number|null;completed_count:number;student_count:number|null;reference_year:number|null;source_url:string|null;is_estimate:boolean;axes:Record<string,number>}[] };
