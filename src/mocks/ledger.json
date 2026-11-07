@@ -1,9 +1,88 @@
 [
-  { "id": "l1", "date": "2026.11.06", "school": "경북대학교", "types": ["blood"], "title": "교내 헌혈버스 헌혈", "amount": 14, "unit": "회", "level": "operator" },
-  { "id": "l2", "date": "2026.11.05", "school": "계명대학교", "types": ["mentoring"], "title": "지역아동센터 학습 멘토링", "amount": 9, "unit": "명 · 18시간", "level": "official" },
-  { "id": "l3", "date": "2026.11.05", "school": "영남대학교", "types": ["sharing", "volunteer"], "title": "연탄 나눔 봉사", "amount": 22, "unit": "명 · 66시간", "level": "linked" },
-  { "id": "l4", "date": "2026.11.04", "school": "대구가톨릭대학교", "types": ["blood"], "title": "겨울 헌혈 릴레이", "amount": 8, "unit": "회", "level": "operator" },
-  { "id": "l5", "date": "2026.11.02", "school": "경북대학교", "types": ["volunteer", "community"], "title": "신천 플로깅 데이", "amount": 21, "unit": "명 · 31.5시간", "level": "linked" },
-  { "id": "l6", "date": "2026.11.02", "school": "대구대학교", "types": ["scholarship", "mentoring"], "title": "드림 장학 멘토링", "amount": 7, "unit": "명 · 14시간", "level": "official" },
-  { "id": "l7", "date": "2026.11.01", "school": "경일대학교", "types": ["mentoring", "community"], "title": "어르신 디지털 도우미", "amount": 6, "unit": "명 · 15시간", "level": "linked" }
+  {
+    "id": "l1",
+    "date": "2026.11.06",
+    "school": "경북대학교",
+    "types": [
+      "blood"
+    ],
+    "title": "교내 헌혈버스 헌혈",
+    "amount": 14,
+    "unit": "회",
+    "level": "operator"
+  },
+  {
+    "id": "l2",
+    "date": "2026.11.05",
+    "school": "계명대학교",
+    "types": [
+      "education"
+    ],
+    "title": "지역아동센터 학습 멘토링",
+    "amount": 9,
+    "unit": "명 · 18시간",
+    "level": "official"
+  },
+  {
+    "id": "l3",
+    "date": "2026.11.05",
+    "school": "영남대학교",
+    "types": [
+      "welfare"
+    ],
+    "title": "연탄 나눔 봉사",
+    "amount": 22,
+    "unit": "명 · 66시간",
+    "level": "linked"
+  },
+  {
+    "id": "l4",
+    "date": "2026.11.04",
+    "school": "대구가톨릭대학교",
+    "types": [
+      "blood"
+    ],
+    "title": "겨울 헌혈 릴레이",
+    "amount": 8,
+    "unit": "회",
+    "level": "operator"
+  },
+  {
+    "id": "l5",
+    "date": "2026.11.02",
+    "school": "경북대학교",
+    "types": [
+      "welfare",
+      "culture"
+    ],
+    "title": "신천 플로깅 데이",
+    "amount": 21,
+    "unit": "명 · 31.5시간",
+    "level": "linked"
+  },
+  {
+    "id": "l6",
+    "date": "2026.11.02",
+    "school": "대구대학교",
+    "types": [
+      "education"
+    ],
+    "title": "드림 장학 멘토링",
+    "amount": 7,
+    "unit": "명 · 14시간",
+    "level": "official"
+  },
+  {
+    "id": "l7",
+    "date": "2026.11.01",
+    "school": "경일대학교",
+    "types": [
+      "education",
+      "culture"
+    ],
+    "title": "어르신 디지털 도우미",
+    "amount": 6,
+    "unit": "명 · 15시간",
+    "level": "linked"
+  }
 ]

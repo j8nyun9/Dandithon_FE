@@ -1,9 +1,102 @@
 [
-  { "id": "a1", "title": "신천 플로깅 데이", "offer": "시간", "types": ["volunteer", "community"], "mode": "현장", "date": "11월 9일(토) 10:00", "place": "신천 둔치 동신교 일대", "minutes": 90, "difficulty": "쉬움", "reason": "주말 오전 2시간 이내 · 1365 실적 자동 연동 · 처음 참여하기 좋은 활동" },
-  { "id": "a2", "title": "지역아동센터 학습 멘토링", "offer": "재능", "types": ["mentoring"], "mode": "현장 · 8회차", "date": "11월 12일(화)부터 매주 화요일 16:00", "place": "북구 OO지역아동센터", "minutes": 120, "difficulty": "보통", "reason": "평일 오후 가능 · 전공 지식을 나누는 재능 활동 · 여러 차시 활동도 한 번의 참여로 인정" },
-  { "id": "a3", "title": "겨울 헌혈 릴레이 — 교내 헌혈버스", "offer": "헌혈", "types": ["blood"], "mode": "현장", "date": "11월 14일(목) 11:00–16:00", "place": "교내 중앙도서관 앞", "minutes": 40, "difficulty": "쉬움", "reason": "공동 프로젝트와 직접 연결 · 1시간 이내 · 건강 상태가 괜찮을 때만 참여하세요" },
-  { "id": "a4", "title": "어르신 디지털 도우미", "offer": "재능", "types": ["mentoring", "community"], "mode": "현장", "date": "11월 16일(토) 14:00", "place": "중구 노인종합복지관", "minutes": 150, "difficulty": "도전", "reason": "주말 오후 가능 · 스마트폰 사용법을 알려주는 재능 활동 · VMS 실적 연동" },
-  { "id": "a5", "title": "요양원 작은 음악회", "offer": "재능", "types": ["volunteer"], "mode": "현장", "date": "11월 23일(토) 15:00", "place": "수성구 OO요양원", "minutes": 90, "difficulty": "보통", "reason": "악기·노래 재능 · 동아리 단위 참여 가능" },
-  { "id": "a6", "title": "연탄 나눔 봉사", "offer": "시간", "types": ["sharing", "volunteer"], "mode": "현장", "date": "11월 30일(토) 09:00", "place": "동구 안심동 일대", "minutes": 180, "difficulty": "도전", "reason": "주말 오전 · 여럿이 함께하는 몸 쓰는 봉사 · 1365 실적 연동" },
-  { "id": "a7", "title": "드림 장학 멘토링", "offer": "재능", "types": ["scholarship", "mentoring"], "mode": "현장 · 학기 과정", "date": "12월 2일(월)부터 격주", "place": "협력 장학재단 연계 기관", "minutes": 120, "difficulty": "도전", "reason": "장학 연계 사회참여 · 학기 내내 이어지는 활동도 한 번의 참여로 인정" }
+  {
+    "id": "a1",
+    "title": "신천 플로깅 데이",
+    "offer": "시간",
+    "types": [
+      "welfare",
+      "culture"
+    ],
+    "mode": "현장",
+    "date": "11월 9일(토) 10:00",
+    "place": "신천 둔치 동신교 일대",
+    "minutes": 90,
+    "difficulty": "쉬움",
+    "reason": "주말 오전 2시간 이내 · 1365 실적 자동 연동 · 처음 참여하기 좋은 활동"
+  },
+  {
+    "id": "a2",
+    "title": "지역아동센터 학습 멘토링",
+    "offer": "재능",
+    "types": [
+      "education"
+    ],
+    "mode": "현장 · 8회차",
+    "date": "11월 12일(화)부터 매주 화요일 16:00",
+    "place": "북구 OO지역아동센터",
+    "minutes": 120,
+    "difficulty": "보통",
+    "reason": "평일 오후 가능 · 전공 지식을 나누는 재능 활동 · 여러 차시 활동도 한 번의 참여로 인정"
+  },
+  {
+    "id": "a3",
+    "title": "겨울 헌혈 릴레이 — 교내 헌혈버스",
+    "offer": "헌혈",
+    "types": [
+      "blood"
+    ],
+    "mode": "현장",
+    "date": "11월 14일(목) 11:00–16:00",
+    "place": "교내 중앙도서관 앞",
+    "minutes": 40,
+    "difficulty": "쉬움",
+    "reason": "공동 프로젝트와 직접 연결 · 1시간 이내 · 건강 상태가 괜찮을 때만 참여하세요"
+  },
+  {
+    "id": "a4",
+    "title": "어르신 디지털 도우미",
+    "offer": "재능",
+    "types": [
+      "education",
+      "culture"
+    ],
+    "mode": "현장",
+    "date": "11월 16일(토) 14:00",
+    "place": "중구 노인종합복지관",
+    "minutes": 150,
+    "difficulty": "도전",
+    "reason": "주말 오후 가능 · 스마트폰 사용법을 알려주는 재능 활동 · VMS 실적 연동"
+  },
+  {
+    "id": "a5",
+    "title": "요양원 작은 음악회",
+    "offer": "재능",
+    "types": [
+      "welfare"
+    ],
+    "mode": "현장",
+    "date": "11월 23일(토) 15:00",
+    "place": "수성구 OO요양원",
+    "minutes": 90,
+    "difficulty": "보통",
+    "reason": "악기·노래 재능 · 동아리 단위 참여 가능"
+  },
+  {
+    "id": "a6",
+    "title": "연탄 나눔 봉사",
+    "offer": "시간",
+    "types": [
+      "welfare"
+    ],
+    "mode": "현장",
+    "date": "11월 30일(토) 09:00",
+    "place": "동구 안심동 일대",
+    "minutes": 180,
+    "difficulty": "도전",
+    "reason": "주말 오전 · 여럿이 함께하는 몸 쓰는 봉사 · 1365 실적 연동"
+  },
+  {
+    "id": "a7",
+    "title": "드림 장학 멘토링",
+    "offer": "재능",
+    "types": [
+      "education"
+    ],
+    "mode": "현장 · 학기 과정",
+    "date": "12월 2일(월)부터 격주",
+    "place": "협력 장학재단 연계 기관",
+    "minutes": 120,
+    "difficulty": "도전",
+    "reason": "장학 연계 사회참여 · 학기 내내 이어지는 활동도 한 번의 참여로 인정"
+  }
 ]

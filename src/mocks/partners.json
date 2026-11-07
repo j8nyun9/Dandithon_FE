@@ -1,25 +1,126 @@
 {
   "kpis": [
-    { "label": "승인된 참여 인원", "value": "486명" },
-    { "label": "인증된 봉사 시간", "value": "1,842시간" },
-    { "label": "헌혈 참여", "value": "312회" },
-    { "label": "공동 프로젝트 달성률", "value": "62%" }
+    {
+      "label": "승인된 참여 인원",
+      "value": "486명"
+    },
+    {
+      "label": "인증된 봉사 시간",
+      "value": "1,842시간"
+    },
+    {
+      "label": "헌혈 참여",
+      "value": "312회"
+    },
+    {
+      "label": "공동 프로젝트 달성률",
+      "value": "62%"
+    }
   ],
   "funnel": [
-    { "activity": "신천 플로깅 데이", "types": ["volunteer", "community"], "views": 1240, "clicks": 410, "joined": 188, "completed": 176 },
-    { "activity": "지역아동센터 학습 멘토링", "types": ["mentoring"], "views": 860, "clicks": 290, "joined": 58, "completed": 51 },
-    { "activity": "겨울 헌혈 릴레이", "types": ["blood"], "views": 2100, "clicks": 520, "joined": 312, "completed": 312 },
-    { "activity": "어르신 디지털 도우미", "types": ["mentoring", "community"], "views": 540, "clicks": 160, "joined": 22, "completed": 20 },
-    { "activity": "요양원 작은 음악회", "types": ["volunteer"], "views": 380, "clicks": 140, "joined": 61, "completed": 58 },
-    { "activity": "연탄 나눔 봉사", "types": ["sharing", "volunteer"], "views": 1520, "clicks": 600, "joined": 140, "completed": 122 },
-    { "activity": "드림 장학 멘토링", "types": ["scholarship", "mentoring"], "views": 310, "clicks": 120, "joined": 18, "completed": 15 }
+    {
+      "activity": "신천 플로깅 데이",
+      "types": [
+        "welfare",
+        "culture"
+      ],
+      "views": 1240,
+      "clicks": 410,
+      "joined": 188,
+      "completed": 176
+    },
+    {
+      "activity": "지역아동센터 학습 멘토링",
+      "types": [
+        "education"
+      ],
+      "views": 860,
+      "clicks": 290,
+      "joined": 58,
+      "completed": 51
+    },
+    {
+      "activity": "겨울 헌혈 릴레이",
+      "types": [
+        "blood"
+      ],
+      "views": 2100,
+      "clicks": 520,
+      "joined": 312,
+      "completed": 312
+    },
+    {
+      "activity": "어르신 디지털 도우미",
+      "types": [
+        "education",
+        "culture"
+      ],
+      "views": 540,
+      "clicks": 160,
+      "joined": 22,
+      "completed": 20
+    },
+    {
+      "activity": "요양원 작은 음악회",
+      "types": [
+        "welfare"
+      ],
+      "views": 380,
+      "clicks": 140,
+      "joined": 61,
+      "completed": 58
+    },
+    {
+      "activity": "연탄 나눔 봉사",
+      "types": [
+        "welfare"
+      ],
+      "views": 1520,
+      "clicks": 600,
+      "joined": 140,
+      "completed": 122
+    },
+    {
+      "activity": "드림 장학 멘토링",
+      "types": [
+        "education"
+      ],
+      "views": 310,
+      "clicks": 120,
+      "joined": 18,
+      "completed": 15
+    }
   ],
   "beforeAfter": [
-    { "type": "volunteer", "before": 21, "after": 34 },
-    { "type": "mentoring", "before": 9, "after": 17 },
-    { "type": "community", "before": 12, "after": 19 },
-    { "type": "sharing", "before": 15, "after": 22 },
-    { "type": "scholarship", "before": 6, "after": 8 },
-    { "type": "blood", "before": 14, "after": 29 }
+    {
+      "type": "welfare",
+      "before": 21,
+      "after": 34
+    },
+    {
+      "type": "education",
+      "before": 9,
+      "after": 17
+    },
+    {
+      "type": "culture",
+      "before": 12,
+      "after": 19
+    },
+    {
+      "type": "welfare",
+      "before": 15,
+      "after": 22
+    },
+    {
+      "type": "education",
+      "before": 6,
+      "after": 8
+    },
+    {
+      "type": "blood",
+      "before": 14,
+      "after": 29
+    }
   ]
 }

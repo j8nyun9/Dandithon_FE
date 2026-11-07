@@ -4,7 +4,7 @@ export type ApprovalStatus = 'pending' | 'approved' | 'rejected';
 /** 내어놓는 것(서사): 시간 · 재능 · 헌혈 */
 export type Offer = '시간' | '재능' | '헌혈';
 /** 사회공헌 유형(측정): 랭킹 육각형의 6개 축 */
-export type ContributionType = 'volunteer' | 'mentoring' | 'community' | 'sharing' | 'scholarship' | 'blood';
+export type ContributionType = 'welfare' | 'education' | 'healthcare' | 'blood' | 'environment' | 'culture';
 export type Hexagon = Record<ContributionType, number>;
 
 export type School = {

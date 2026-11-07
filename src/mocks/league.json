@@ -7,14 +7,113 @@
     "isDemo": true
   },
   "mySchoolId": "knu",
-  "project": { "title": "대구·경북 겨울 헌혈 릴레이", "current": 312, "target": 500, "unit": "회" },
+  "project": {
+    "title": "대구·경북 겨울 헌혈 릴레이",
+    "current": 312,
+    "target": 500,
+    "unit": "회"
+  },
   "schools": [
-    { "id": "kmu", "name": "계명대학교", "rank": 1, "midRank": 2, "dandiIndex": 78.4, "enrolled": 120, "hexagon": { "volunteer": 62, "mentoring": 48, "community": 40, "sharing": 35, "scholarship": 18, "blood": 30 } },
-    { "id": "knu", "name": "경북대학교", "rank": 2, "midRank": 3, "dandiIndex": 74.9, "enrolled": 150, "hexagon": { "volunteer": 55, "mentoring": 42, "community": 38, "sharing": 30, "scholarship": 22, "blood": 58 } },
-    { "id": "ynu", "name": "영남대학교", "rank": 3, "midRank": 1, "dandiIndex": 71.2, "enrolled": 140, "hexagon": { "volunteer": 58, "mentoring": 35, "community": 45, "sharing": 40, "scholarship": 15, "blood": 32 } },
-    { "id": "dcu", "name": "대구가톨릭대학교", "rank": 4, "midRank": 4, "dandiIndex": 63.5, "enrolled": 90, "hexagon": { "volunteer": 40, "mentoring": 30, "community": 28, "sharing": 55, "scholarship": 20, "blood": 25 } },
-    { "id": "dgu", "name": "대구대학교", "rank": 5, "midRank": 6, "dandiIndex": 58.0, "enrolled": 100, "hexagon": { "volunteer": 38, "mentoring": 45, "community": 25, "sharing": 22, "scholarship": 26, "blood": 20 } },
-    { "id": "kiu", "name": "경일대학교", "rank": 6, "midRank": 5, "dandiIndex": 52.7, "enrolled": 70, "hexagon": { "volunteer": 30, "mentoring": 22, "community": 35, "sharing": 25, "scholarship": 12, "blood": 28 } }
+    {
+      "id": "kmu",
+      "name": "계명대학교",
+      "rank": 1,
+      "midRank": 2,
+      "dandiIndex": 78.4,
+      "enrolled": 120,
+      "hexagon": {
+        "welfare": 97,
+        "education": 66,
+        "culture": 40,
+        "blood": 30,
+        "healthcare": 0,
+        "environment": 0
+      }
+    },
+    {
+      "id": "knu",
+      "name": "경북대학교",
+      "rank": 2,
+      "midRank": 3,
+      "dandiIndex": 74.9,
+      "enrolled": 150,
+      "hexagon": {
+        "welfare": 85,
+        "education": 64,
+        "culture": 38,
+        "blood": 58,
+        "healthcare": 0,
+        "environment": 0
+      }
+    },
+    {
+      "id": "ynu",
+      "name": "영남대학교",
+      "rank": 3,
+      "midRank": 1,
+      "dandiIndex": 71.2,
+      "enrolled": 140,
+      "hexagon": {
+        "welfare": 98,
+        "education": 50,
+        "culture": 45,
+        "blood": 32,
+        "healthcare": 0,
+        "environment": 0
+      }
+    },
+    {
+      "id": "dcu",
+      "name": "대구가톨릭대학교",
+      "rank": 4,
+      "midRank": 4,
+      "dandiIndex": 63.5,
+      "enrolled": 90,
+      "hexagon": {
+        "welfare": 95,
+        "education": 50,
+        "culture": 28,
+        "blood": 25,
+        "healthcare": 0,
+        "environment": 0
+      }
+    },
+    {
+      "id": "dgu",
+      "name": "대구대학교",
+      "rank": 5,
+      "midRank": 6,
+      "dandiIndex": 58.0,
+      "enrolled": 100,
+      "hexagon": {
+        "welfare": 60,
+        "education": 71,
+        "culture": 25,
+        "blood": 20,
+        "healthcare": 0,
+        "environment": 0
+      }
+    },
+    {
+      "id": "kiu",
+      "name": "경일대학교",
+      "rank": 6,
+      "midRank": 5,
+      "dandiIndex": 52.7,
+      "enrolled": 70,
+      "hexagon": {
+        "welfare": 55,
+        "education": 34,
+        "culture": 35,
+        "blood": 28,
+        "healthcare": 0,
+        "environment": 0
+      }
+    }
   ],
-  "contributions": { "hours": 1842, "talent": 126, "blood": 312 }
+  "contributions": {
+    "hours": 1842,
+    "talent": 126,
+    "blood": 312
+  }
 }

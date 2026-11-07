@@ -18,7 +18,6 @@ export function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<SiteShell />}><Route path="login" element={<LoginPage />} /></Route>
-        <Route element={<RequireAuth />}>
         <Route element={<SiteShell />}>
           <Route index element={<HomePage />} />
           <Route path="activities" element={<ActivitiesLayout />}>
@@ -31,9 +30,8 @@ export function App() {
           <Route path="about" element={<AboutPage />} />
           <Route path="partners" element={<PartnersPage />} />
         </Route>
-        <Route path="admin" element={<AdminPage />} />
-        <Route path="*" element={<HomePage />} />
-        </Route>
+        <Route element={<RequireAuth />}><Route path="admin" element={<AdminPage />} /></Route>
+        <Route path="*" element={<SiteShell />}><Route index element={<HomePage />} /></Route>
       </Routes>
     </BrowserRouter>
   );

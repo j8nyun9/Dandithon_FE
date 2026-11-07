@@ -17,12 +17,13 @@ export function RadarHex({ values, compare, max = 70, tone = 'light', labels = t
   const size = 300;
   const c = size / 2;
   const r = labels ? 92 : 130;
+  const safeValue = (value: unknown) => typeof value === 'number' && Number.isFinite(value) ? value : 0;
   const pt = (i: number, v: number) => {
     const a = ((Math.PI * 2) / 6) * i - Math.PI / 2;
     const d = (Math.min(v, max) / max) * r;
     return [c + Math.cos(a) * d, c + Math.sin(a) * d] as const;
   };
-  const poly = (h: Hexagon) => CONTRIBUTION_TYPES.map((t, i) => pt(i, h[t.key]).join(',')).join(' ');
+  const poly = (h: Hexagon) => CONTRIBUTION_TYPES.map((t, i) => pt(i, safeValue(h[t.key])).join(',')).join(' ');
   const ring = (f: number) => CONTRIBUTION_TYPES.map((_, i) => pt(i, max * f).join(',')).join(' ');
 
   const dark = tone === 'dark';
@@ -52,7 +53,7 @@ export function RadarHex({ values, compare, max = 70, tone = 'light', labels = t
         strokeWidth="2"
       />
       {CONTRIBUTION_TYPES.map((t, i) => {
-        const [x, y] = pt(i, values[t.key]);
+        const [x, y] = pt(i, safeValue(values[t.key]));
         return <circle key={t.key} cx={x} cy={y} r="3.5" className={dark ? 'fill-accent' : 'fill-primary'} />;
       })}
       {labels &&
@@ -62,7 +63,7 @@ export function RadarHex({ values, compare, max = 70, tone = 'light', labels = t
             <text key={t.key} x={x} y={y} textAnchor="middle" dominantBaseline="middle" className={`${label} text-[11px]`}>
               <tspan x={x}>{t.label}</tspan>
               <tspan x={x} dy="14" className={`font-bold ${dark ? 'fill-paper' : 'fill-primary'}`}>
-                {Number(values[t.key].toFixed(2))}{valueSuffix}
+                {Number(safeValue(values[t.key]).toFixed(2))}{valueSuffix}
               </tspan>
             </text>
           );
