@@ -1,119 +1,17 @@
-import { useState } from 'react';
-import { Sparkles, MapPin, Clock, Info } from 'lucide-react';
-import activities from '../../mocks/activities.json';
-import type { Activity } from '../../types';
-import { TypeChips } from '../../components/common/Badges';
-import { CONTRIBUTION_TYPES } from '../../utils/contribution';
-
-const groups = [
-  { key: 'offer', label: '내어놓을 수 있는 것', options: ['시간', '재능', '헌혈'] },
-  { key: 'type', label: '관심 있는 사회공헌 유형', options: CONTRIBUTION_TYPES.map(t => t.label) },
-  { key: 'time', label: '사용 가능 시간', options: ['평일 오후', '주말 오전', '주말 오후', '1시간 이내'] },
-] as const;
-
-const diffCls: Record<Activity['difficulty'], string> = {
-  쉬움: 'bg-green-50 text-green-700',
-  보통: 'bg-blue-50 text-blue-700',
-  도전: 'bg-orange-50 text-accent-deep',
-};
-
-export function MatchingPage() {
-  const [picked, setPicked] = useState<Record<string, string[]>>({ offer: ['시간', '재능'], type: [], time: ['주말 오전'] });
-  const [shown, setShown] = useState(true);
-
-  const toggle = (k: string, v: string) =>
-    setPicked(p => ({ ...p, [k]: p[k].includes(v) ? p[k].filter(x => x !== v) : [...p[k], v] }));
-
-  // TODO: 서버 AI 추천 API 연결 — AI는 DB에 등록된 행사만 추천하고 문장만 생성
-  const typeKeys = CONTRIBUTION_TYPES.filter(t => picked.type.includes(t.label)).map(t => t.key);
-  const results = (activities as Activity[]).filter(
-    a =>
-      (!picked.offer.length || picked.offer.includes(a.offer)) &&
-      (!typeKeys.length || a.types.some(t => typeKeys.includes(t))),
-  );
-
-  return (
-    <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
-      <aside className="h-fit rounded-xl border border-gray-200 bg-white p-6 lg:sticky lg:top-40">
-        <h2 className="flex items-center gap-2 font-bold text-primary">
-          <Sparkles size={18} className="text-accent" /> AI 단디 매칭
-        </h2>
-        <p className="mt-1 text-xs text-gray-500">각자 형편대로, 할 수 있는 만큼. 인증 가능한 등록 활동 중에서 골라 드려요.</p>
-        <div className="mt-6 flex flex-col gap-6">
-          {groups.map(g => (
-            <div key={g.key}>
-              <p className="mb-2 text-sm font-semibold text-gray-700">{g.label}</p>
-              <div className="flex flex-wrap gap-2">
-                {g.options.map(o => {
-                  const on = picked[g.key].includes(o);
-                  return (
-                    <button
-                      key={o}
-                      onClick={() => toggle(g.key, o)}
-                      className={`rounded-full border px-4 py-1 text-sm transition ${
-                        on ? 'border-primary bg-primary text-paper' : 'border-gray-300 text-gray-600 hover:border-primary'
-                      }`}
-                    >
-                      {o}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-        </div>
-        <button
-          onClick={() => setShown(true)}
-          className="mt-6 flex w-full items-center justify-center gap-2 rounded-md bg-accent py-4 font-semibold text-white hover:bg-accent-deep"
-        >
-          <Sparkles size={18} /> 추천 받기
-        </button>
-      </aside>
-
-      <section>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-serif text-2xl font-bold text-primary">추천 활동 {shown ? results.length : 0}건</h2>
-          <p className="flex items-center gap-1 text-xs text-gray-500">
-            <Info size={14} /> 인증 가능한 등록 활동만 추천합니다.
-          </p>
-        </div>
-        {shown && results.length === 0 && (
-          <p className="rounded-xl bg-white p-6 text-sm text-gray-500">
-            조건에 맞는 등록 활동이 아직 없어요. 조건을 조금 넓혀 볼까요?
-          </p>
-        )}
-        <div className="grid gap-6 md:grid-cols-2">
-          {shown &&
-            results.map(a => (
-              <article key={a.id} className="flex flex-col rounded-xl border border-gray-200 bg-white p-6 transition hover:shadow-lg">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <TypeChips types={a.types} />
-                    <h3 className="mt-2 text-lg font-bold text-primary">{a.title}</h3>
-                  </div>
-                  <span className={`shrink-0 rounded-full px-2 py-1 text-xs font-semibold ${diffCls[a.difficulty]}`}>
-                    {a.difficulty}
-                  </span>
-                </div>
-                <div className="mt-4 flex flex-col gap-1 text-sm text-gray-500">
-                  <span className="flex items-center gap-2">
-                    <Clock size={14} /> {a.date} · {a.minutes}분 · {a.mode}
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <MapPin size={14} /> {a.place}
-                  </span>
-                </div>
-                <p className="paper-texture mt-4 flex-1 rounded-lg p-4 text-sm text-ink">
-                  <b className="mr-1 text-accent-deep">추천 이유</b>
-                  {a.reason}
-                </p>
-                <button className="mt-4 rounded-md bg-primary py-2 text-sm font-semibold text-paper hover:bg-primary-soft">
-                  참여 신청
-                </button>
-              </article>
-            ))}
-        </div>
-      </section>
-    </div>
-  );
+import {useEffect,useState} from 'react';
+import {Link} from 'react-router-dom';
+import {Sparkles,Clock,Info} from 'lucide-react';
+import {api,post,session,type Mission} from '../../services/api';
+import {CONTRIBUTION_TYPES} from '../../utils/contribution';
+type Recommendation={id:number;reason:string};
+export function MatchingPage(){
+ const [missions,setMissions]=useState<Mission[]>([]),[selected,setSelected]=useState<string[]>([]),[recs,setRecs]=useState<Recommendation[]|null>(null),[mode,setMode]=useState(''),[error,setError]=useState(''),[clicked,setClicked]=useState<number[]>([]),[applied,setApplied]=useState<number[]>([]),[notice,setNotice]=useState('');
+ useEffect(()=>{if(!session())return;Promise.all([api<Mission[]>('/missions'),api<number[]>('/me/application-clicks'),api<number[]>('/me/applications')]).then(([m,c,a])=>{setMissions(m);setClicked(c);setApplied(a);}).catch(e=>setError(e.message));},[]);
+ async function recommend(){try{setError('');const result=await post<{mode:string;result:{recommendations:Recommendation[]}}>('/ai/recommend',{profile:{interests:selected}});setMode(result.mode);setRecs(result.result.recommendations);}catch(e){setError(e instanceof Error?e.message:'추천 실패');}}
+ async function click(id:number){const tab=window.open('about:blank','_blank');try{const result=await post<{apply_url:string}>(`/missions/${id}/click`);if(tab){tab.location.href=result.apply_url;setClicked(v=>v.includes(id)?v:[...v,id]);}else setError('팝업이 차단되었습니다. 팝업 허용 후 다시 시도하세요.');}catch(e){tab?.close();setError(e instanceof Error?e.message:'클릭 기록 실패');}}
+ async function confirmApplication(id:number){if(!window.confirm('기관의 공식 신청 절차를 완료했나요? 이 표시는 본인의 기록이며 기관의 신청 확인은 아닙니다.'))return;try{await post(`/missions/${id}/application-confirmation`);setApplied(v=>v.includes(id)?v:[...v,id]);setNotice('신청 완료를 표시했습니다. 실제 신청 여부와 활동 완료는 기관에서 확인합니다.');}catch(e){setError(e instanceof Error?e.message:'신청 표시 실패');}}
+ if(!session())return <p>미션을 확인하려면 <Link className="underline" to="/login">로그인</Link>해 주세요.</p>;
+ const shown=recs?recs.flatMap(r=>{const mission=missions.find(m=>m.id===r.id);return mission?[{mission,reason:r.reason}]:[]}):missions.map(mission=>({mission,reason:''}));
+ return <div className="grid gap-6 lg:grid-cols-[320px_1fr]"><aside className="h-fit rounded-xl border border-gray-200 bg-white p-6 lg:sticky lg:top-40"><h2 className="flex items-center gap-2 font-bold text-primary"><Sparkles size={18} className="text-accent"/> AI 단디 매칭</h2><p className="mt-1 text-xs text-gray-500">관심 분야를 선택하고 등록된 활동을 추천받아 보세요.</p><p className="mt-6 mb-2 text-sm font-semibold text-gray-700">관심 있는 사회공헌 유형</p><div className="flex flex-wrap gap-2">{CONTRIBUTION_TYPES.map(t=><button key={t.key} onClick={()=>setSelected(v=>v.includes(t.key)?v.filter(x=>x!==t.key):[...v,t.key])} className={`rounded-full border px-4 py-1 text-sm ${selected.includes(t.key)?'border-primary bg-primary text-paper':'border-gray-300 text-gray-600'}`}>{t.label}</button>)}</div><button onClick={recommend} className="mt-6 flex w-full items-center justify-center gap-2 rounded-md bg-accent py-4 font-semibold text-white hover:bg-accent-deep"><Sparkles size={18}/>추천 받기</button>{mode&&<p className="mt-3 text-xs text-gray-600">{mode==='live'?'AI 추천':'기본 추천'} · 자격과 공고는 직접 확인해 주세요.</p>}</aside>
+ <section><div className="mb-4 flex flex-wrap items-center justify-between gap-2"><h2 className="font-serif text-2xl font-bold text-primary">등록 활동 {shown.length}건</h2><p className="flex items-center gap-1 text-xs text-gray-500"><Info size={14}/>원 공고의 참여 조건을 확인해 주세요.</p></div>{error&&<p role="alert" className="mb-4 text-red-700">{error}</p>}{notice&&<p role="status" className="mb-4 text-sm text-primary">{notice}</p>}{shown.length===0&&!error&&<p className="rounded-xl bg-white p-6 text-sm text-gray-500">현재 표시할 미션이 없습니다.</p>}<div className="grid gap-6 md:grid-cols-2">{shown.map(({mission:m,reason})=><article key={m.id} className="flex flex-col rounded-xl border border-gray-200 bg-white p-6 transition hover:shadow-lg"><p className="text-xs font-semibold text-accent-deep">{Object.keys(m.weights).map(k=>CONTRIBUTION_TYPES.find(t=>t.key===k)?.label||k).join(' · ')}</p><h3 className="mt-2 text-lg font-bold text-primary">{m.title} {m.is_demo&&<span className="text-sm text-gray-500">실제 모집 아님</span>}</h3><p className="mt-4 flex items-center gap-2 text-sm text-gray-500"><Clock size={14}/>{m.application_start&&m.application_end?`${m.application_start} ~ ${m.application_end}`:'모집 기간 미정'}</p>{m.application_note&&<p className="mt-2 text-sm text-gray-500">모집 안내: {m.application_note}</p>}<p className="mt-2 text-sm text-gray-500">완료 승인 시 기여량: {m.contribution_value}{!m.is_demo && m.weights.blood ? ' (헌혈 분야 제외)' : ''}</p><p className="mt-2 text-sm text-gray-500">대상: {m.eligibility}</p><p className="mt-2 text-sm text-gray-500">완료 확인: {m.completion_policy}</p>{reason&&<p className="paper-texture mt-4 flex-1 rounded-lg p-4 text-sm"><b className="mr-1 text-accent-deep">추천 이유</b>{reason}</p>}<a className="mt-4 text-sm underline" href={m.source_url} target="_blank" rel="noreferrer">원 공고 확인</a><button onClick={()=>click(m.id)} className="mt-4 rounded-md bg-primary py-2 text-sm font-semibold text-paper hover:bg-primary-soft">공식 신청 링크</button>{applied.includes(m.id)?<p className="mt-3 text-sm text-primary">신청 완료 표시됨 · 본인 기록</p>:clicked.includes(m.id)?<button onClick={()=>confirmApplication(m.id)} className="mt-3 rounded-md border border-primary py-2 text-sm font-semibold text-primary">신청 완료 표시</button>:null}</article>)}</div></section></div>;
 }

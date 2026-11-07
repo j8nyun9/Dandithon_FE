@@ -1,15 +1,12 @@
-import { ArrowRight, BarChart3, Trophy, BookOpen, Leaf, TrendingUp, Clock, MapPin } from 'lucide-react';
+import {useEffect,useState} from 'react';
+import { ArrowRight, BarChart3, Trophy, BookOpen, Leaf } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import league from '../../mocks/league.json';
-import activities from '../../mocks/activities.json';
-import type { Activity, School } from '../../types';
-import { DemoBadge, TypeChips } from '../../components/common/Badges';
-import { HeritageBuilding } from '../../components/common/HeritageBuilding';
+import {api,session,type League,type Mission} from '../../services/api';
+import type {Hexagon} from '../../types';
+import heritageBuilding from '../../assets/pavilion-cutout.png';
 import { container } from '../../components/common/PageHeader';
 import { RadarHex } from '../../components/common/RadarHex';
-import { SeasonTimeline } from '../../components/common/SeasonTimeline';
-import { rankDelta } from '../../utils/format';
-import { strongestType } from '../../utils/contribution';
+import { CONTRIBUTION_TYPES } from '../../utils/contribution';
 
 const features = [
   { icon: BarChart3, title: '대학 리그', desc: '학기 단위 학교 간 선의 경쟁', to: '/league' },
@@ -21,48 +18,31 @@ const features = [
 function Hero() {
   return (
     <section className="navy-texture relative overflow-hidden text-paper">
-      <div className={`${container} grid items-center gap-6 pt-16 md:grid-cols-[1.3fr_1fr] md:pt-24`}>
-        <div className="relative z-10 pb-16 md:pb-24">
-          <p className="text-xs tracking-[0.35em] text-paper/70 md:text-sm">DAEGU 1907 — DANDI MOVEMENT</p>
-          <h1 className="mt-6 font-serif text-4xl leading-tight font-bold md:text-4xl md:leading-tight lg:text-[46px] lg:whitespace-nowrap">
-            1907년엔 반지를,
-            <br />
-            오늘은 <span className="text-accent">시간</span>을 내어놓습니다.
-          </h1>
-          <p className="mt-6 text-base leading-relaxed text-paper/80 md:text-lg">
-            누구는 돈을, 누구는 반지를 내놓았던 국채보상운동처럼.
-            <br />
-            대학생은 시간과 재능, 헌혈로 각자 할 수 있는 만큼 함께합니다.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Link
-              to="/activities"
-              className="flex items-center gap-2 rounded-md bg-paper px-6 py-4 font-semibold text-primary transition hover:bg-white"
-            >
-              지금 시작하기 <ArrowRight size={18} />
-            </Link>
-            <Link
-              to="/about"
-              className="rounded-md border border-paper/40 px-6 py-4 font-semibold text-paper transition hover:bg-white/10"
-            >
-              서비스 소개
-            </Link>
-          </div>
-        </div>
-
-        {/* 우측 비주얼: 붉은 판 + 근대 건물 */}
-        <div className="relative h-72 self-end md:h-[480px]">
-          <div className="absolute top-0 right-0 h-56 w-56 bg-accent-deep md:h-96 md:w-80">
-            <div className="absolute top-6 right-6 text-right font-serif text-xs leading-relaxed tracking-[0.25em] text-paper/90">
-              DANDI
-              <br />
-              MOVEMENT
-              <br />
-              1907
-              <span className="mt-2 ml-auto block h-px w-16 bg-paper/60" />
+      <div className="relative mx-auto max-w-[1600px] md:min-h-[440px] lg:min-h-[500px] xl:min-h-[550px]">
+        <div className="absolute inset-x-0 bottom-0 top-[11%] hidden md:block" aria-hidden="true">
+          <div className="absolute inset-y-0 right-0 w-[40.5%] bg-[#87372d]">
+            <div className="absolute top-6 right-8 text-right font-serif text-[10px] leading-relaxed tracking-[0.25em] text-paper/90 lg:top-8 lg:right-12">
+              DANDI<br />MOVEMENT<br />1907<span className="mt-2 ml-auto block h-px w-14 bg-paper/60" />
             </div>
           </div>
-          <HeritageBuilding className="absolute bottom-0 -left-6 w-[115%] drop-shadow-[0_24px_24px_rgb(0_0_0/0.45)] md:left-4 md:w-full" />
+        </div>
+        <img src={heritageBuilding} alt="" aria-hidden="true" className="pointer-events-none absolute right-[-3%] bottom-[-6%] z-[1] hidden h-auto w-[64%] max-w-none md:block" />
+        <div className={`${container} relative z-10 pt-16 pb-12 md:pt-[8%] md:pb-24`}>
+          <div className="relative z-10 max-w-[620px] md:w-[57%]">
+            <p className="text-xs tracking-[0.35em] text-paper/70 md:text-sm">DAEGU 1907 — DANDI MOVEMENT</p>
+            <h1 className="mt-6 font-serif text-4xl leading-[1.2] font-bold md:text-[38px] lg:text-[46px] xl:text-[52px]">
+              작은 선행이 모여,<br />우리 학교의 <span className="text-accent">자부심</span>이 되다.
+            </h1>
+            <p className="mt-6 font-serif text-base leading-relaxed text-paper/80 md:text-lg">국채보상운동의 연대 정신을 이어,<br />대학생의 작은 실천이 더 큰 변화를 만듭니다.</p>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link to="/activities" className="flex items-center gap-2 rounded-md bg-paper px-6 py-4 font-semibold text-primary transition hover:bg-white">지금 시작하기 <ArrowRight size={18} /></Link>
+              <Link to="/about" className="rounded-md border border-paper/40 px-6 py-4 font-semibold text-paper transition hover:bg-white/10">서비스 소개</Link>
+            </div>
+          </div>
+        </div>
+        <div className="relative mt-4 h-56 overflow-hidden md:hidden" aria-hidden="true">
+          <div className="absolute inset-y-0 right-0 w-3/4 bg-[#87372d]" />
+          <img src={heritageBuilding} alt="" className="absolute right-[-4%] bottom-[-6%] h-auto w-[108%] max-w-none" />
         </div>
       </div>
     </section>
@@ -108,158 +88,21 @@ function SectionHead({ eyebrow, title, to, cta }: { eyebrow: string; title: stri
 }
 
 function LeagueSection() {
-  const schools = league.schools as School[];
-  const my = schools.find(s => s.id === league.mySchoolId)!;
-  const delta = rankDelta(my.rank, my.midRank);
-  const top = schools.slice(0, 5);
-
-  return (
-    <section className={`${container} py-16`}>
-      <SectionHead eyebrow="UNIVERSITY LEAGUE" title="이번 학기 대학 리그" to="/league" cta="전체 순위" />
-      <div className="mb-6 rounded-xl border border-gray-200 bg-white px-6 pt-4 pb-2">
-        <SeasonTimeline />
-      </div>
-      <div className="grid gap-6 lg:grid-cols-[1.2fr_1.4fr]">
-        <div className="navy-texture grid grid-cols-[1fr_auto] gap-4 rounded-xl p-6 text-paper">
-          <div className="flex flex-col justify-between">
-            <div>
-              <p className="text-sm text-paper/60">우리 학교</p>
-              <p className="mt-4 text-2xl font-bold">{my.name}</p>
-              <p className="mt-2 font-serif text-7xl font-black">
-                {my.rank}
-                <span className="ml-2 text-2xl font-medium">위</span>
-              </p>
-              {delta > 0 && (
-                <p className="mt-2 flex items-center gap-1 text-sm font-semibold text-accent">
-                  <TrendingUp size={16} /> 중간결산보다 {delta}계단 상승
-                </p>
-              )}
-            </div>
-            <div className="mt-6 border-t border-white/15 pt-4">
-              <span className="text-sm text-paper/60">단디 지수</span>
-              <p className="text-3xl font-bold">{my.dandiIndex.toFixed(1)}</p>
-            </div>
-          </div>
-          <div className="flex w-48 flex-col items-center justify-center">
-            <RadarHex values={my.hexagon} tone="dark" labels={false} className="w-full" />
-            <p className="mt-2 text-xs text-paper/60">강점: {strongestType(my.hexagon).label}</p>
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-gray-200 bg-white p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <p className="text-sm text-gray-500">인증된 활동 기준 · 등록 시범 참가 집단</p>
-            <DemoBadge />
-          </div>
-          <ul className="flex flex-col gap-4">
-            {top.map(s => (
-              <li key={s.id} className="grid grid-cols-[32px_1fr_64px] items-center gap-4">
-                <span className={`font-serif text-2xl font-black ${s.rank <= 3 ? 'text-accent' : 'text-gray-300'}`}>
-                  {s.rank}
-                </span>
-                <div>
-                  <p className={`text-sm font-semibold ${s.id === my.id ? 'text-primary' : 'text-gray-700'}`}>
-                    {s.name}
-                    {s.id === my.id && <span className="ml-2 rounded bg-primary px-1 text-[10px] text-paper">우리 학교</span>}
-                  </p>
-                  <div className="mt-1 h-2 rounded-full bg-gray-100">
-                    <div
-                      className={`h-full rounded-full ${s.id === my.id ? 'bg-accent' : 'bg-primary-soft'}`}
-                      style={{ width: `${s.dandiIndex}%` }}
-                    />
-                  </div>
-                </div>
-                <span className="text-right font-bold text-primary">{s.dandiIndex.toFixed(1)}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </section>
-  );
+ const current=session(),[data,setData]=useState<League|null>(null),[error,setError]=useState('');
+ useEffect(()=>{api<League>('/league?semester_id=1').then(setData).catch(e=>setError(e.message));},[]);
+ const schools=data?.schools||[]; const my=schools.find(s=>s.school_id===current?.school_id); const max=Math.max(1,...schools.map(s=>s.overall));
+ const axisMax=Math.max(1,...schools.flatMap(s=>Object.values(s.axes)));
+ return <section className={`${container} py-16`}><SectionHead eyebrow="UNIVERSITY LEAGUE" title="이번 학기 대학 리그" to="/league" cta="전체 순위"/><div className="mb-6 rounded-xl border border-gray-200 bg-white p-5 text-sm text-gray-500">2026년 2학기 · 관리자 승인 실적 기준</div>{error?<p role="alert">{error}</p>:!data?<p>리그를 불러오는 중입니다.</p>:<div className="grid gap-6 lg:grid-cols-[1.2fr_1.4fr]"><div className="navy-texture grid grid-cols-[1fr_auto] gap-4 rounded-xl p-6 text-paper"><div><p className="text-sm text-paper/60">우리 학교</p>{my?<><p className="mt-4 text-2xl font-bold">{my.school}</p><p className="mt-2 font-serif text-6xl font-black">{schools.indexOf(my)+1}<span className="ml-2 text-2xl">위</span></p><p className="mt-6 border-t border-white/15 pt-4 text-sm text-paper/60">승인 기여량</p><p className="text-3xl font-bold">{my.overall}</p></>:<p className="mt-4">학교 소속 학생 계정으로 로그인하면 표시됩니다.</p>}</div>{my&&<div className="flex w-40 flex-col justify-center"><RadarHex values={my.axes as Hexagon} max={axisMax} valueSuffix="" tone="dark" labels={false}/></div>}</div><div className="rounded-xl border border-gray-200 bg-white p-6"><p className="mb-4 text-sm text-gray-500">승인된 실적 · 막대는 최고 기여량에 대한 상대 비율</p><ul className="flex flex-col gap-4">{schools.map((s,i)=><li key={s.school_id} className="grid grid-cols-[32px_1fr_64px] items-center gap-4"><span className="font-serif text-2xl font-black text-accent">{i+1}</span><div><p className="text-sm font-semibold">{s.school}{s.school_id===my?.school_id?' · 우리 학교':''}</p><div className="mt-1 h-2 rounded-full bg-gray-100"><div className="h-full rounded-full bg-accent" style={{width:`${s.overall/max*100}%`}}/></div></div><span className="text-right font-bold text-primary">{s.overall}</span></li>)}</ul></div></div>}</section>;
 }
 
 function ProjectSection() {
-  const progress = Math.round((league.project.current / league.project.target) * 100);
-  const c = league.contributions;
-  const given: [string, string, string][] = [
-    ['시간', `${c.hours.toLocaleString('ko-KR')}시간`, '봉사 활동 시간'],
-    ['재능', `${c.talent.toLocaleString('ko-KR')}건`, '멘토링·공연·도우미'],
-    ['헌혈', `${c.blood.toLocaleString('ko-KR')}회`, '헌혈증 확인 기준'],
-  ];
-
-  return (
-    <section className="paper-texture border-y border-paper-deep">
-      <div className={`${container} grid gap-6 py-16 lg:grid-cols-2`}>
-        <div>
-          <SectionHead eyebrow="COMMUNITY PROJECT" title="함께 이루는 공동 목표" />
-          <p className="text-lg font-semibold text-ink">{league.project.title}</p>
-          <div className="mt-4 h-4 overflow-hidden rounded-full bg-paper-deep">
-            <div className="h-full rounded-full bg-accent" style={{ width: `${progress}%` }} />
-          </div>
-          <div className="mt-2 flex justify-between text-sm text-gray-600">
-            <span>
-              {league.project.current} / {league.project.target}
-              {league.project.unit}
-            </span>
-            <span className="font-bold text-accent-deep">{progress}% 달성</span>
-          </div>
-          <p className="mt-6 font-serif text-sm leading-relaxed text-ink/80">
-            1907년, 누구는 돈을, 누구는 끼던 반지를 빼어 내놓았습니다. 얼마를 냈느냐보다 저마다 형편대로 함께했다는 것이
-            그 운동의 힘이었습니다. 오늘 우리는 시간과 재능, 그리고 헌혈로 그 마음을 잇습니다.
-          </p>
-        </div>
-
-        <div className="flex flex-col justify-end">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="font-bold text-primary">이번 시즌 함께 내어놓은 것</h3>
-            <DemoBadge />
-          </div>
-          <dl className="grid gap-4 sm:grid-cols-3">
-            {given.map(([label, value, note]) => (
-              <div key={label} className="rounded-xl border border-paper-deep bg-white/70 p-4">
-                <dt className="font-serif text-sm font-bold text-accent-deep">{label}</dt>
-                <dd className="mt-2 text-2xl font-bold text-primary">{value}</dd>
-                <p className="mt-1 text-xs text-gray-400">{note}</p>
-              </div>
-            ))}
-          </dl>
-          <p className="mt-4 text-xs text-gray-500">승인된 참여만 집계합니다. 한 시간도, 한 번의 헌혈도 똑같이 소중한 참여입니다.</p>
-        </div>
-      </div>
-    </section>
-  );
+ return <section className="paper-texture border-y border-paper-deep"><div className={`${container} grid gap-6 py-16 lg:grid-cols-2`}><div><SectionHead eyebrow="COMMUNITY PROJECT" title="함께 이루는 공동 목표"/><p className="text-lg font-semibold text-ink">우리의 참여를 함께 기록합니다</p><p className="mt-5 font-serif text-sm leading-relaxed text-ink/80">1907년 각자의 형편대로 함께했던 마음처럼, 오늘 우리는 시간과 재능으로 함께합니다.</p></div><div className="flex flex-col justify-end"><h3 className="mb-4 font-bold text-primary">이번 시즌 함께 내어놓은 것</h3><div className="grid gap-4 sm:grid-cols-3">{['시간','재능','헌혈'].map(label=><div key={label} className="rounded-xl border border-paper-deep bg-white/70 p-4"><p className="font-serif font-bold text-accent-deep">{label}</p><p className="mt-2 text-sm text-gray-500">집계 준비 중</p></div>)}</div><p className="mt-4 text-xs text-gray-500">공동 목표와 활동별 세부 집계는 확정 후 표시합니다.</p></div></div></section>;
 }
 
 function ActivitySection() {
-  const list = (activities as Activity[]).slice(0, 3);
-  return (
-    <section className={`${container} py-16`}>
-      <SectionHead eyebrow="TODAY'S DANDI" title="오늘 할 수 있는 단디" to="/activities" cta="AI 맞춤 추천 받기" />
-      <div className="grid gap-6 md:grid-cols-3">
-        {list.map(a => (
-          <article key={a.id} className="flex flex-col rounded-xl border border-gray-200 bg-white p-6 transition hover:shadow-lg">
-            <TypeChips types={a.types} />
-            <h3 className="mt-2 text-lg font-bold text-primary">{a.title}</h3>
-            <div className="mt-4 flex flex-col gap-1 text-sm text-gray-500">
-              <span className="flex items-center gap-2">
-                <Clock size={14} /> {a.date} · {a.minutes}분
-              </span>
-              <span className="flex items-center gap-2">
-                <MapPin size={14} /> {a.place}
-              </span>
-            </div>
-            <Link
-              to="/activities"
-              className="mt-6 rounded-md border border-primary py-2 text-center text-sm font-semibold text-primary hover:bg-primary hover:text-paper"
-            >
-              자세히 보기
-            </Link>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
+ const [list,setList]=useState<Mission[]>([]),[error,setError]=useState('');
+ useEffect(()=>{api<Mission[]>('/missions').then(setList).catch(e=>setError(e.message));},[]);
+ return <section className={`${container} py-16`}><SectionHead eyebrow="TODAY'S DANDI" title="오늘 할 수 있는 단디" to="/activities" cta="AI 맞춤 추천 받기"/>{error?<p role="alert">{error}</p>:list.length===0?<p className="rounded-xl bg-white p-6 text-gray-500">현재 모집 중인 미션이 없습니다.</p>:<div className="grid gap-6 md:grid-cols-3">{list.slice(0,3).map(m=><article key={m.id} className="flex flex-col rounded-xl border border-gray-200 bg-white p-6 transition hover:shadow-lg"><p className="text-xs text-accent-deep">{Object.keys(m.weights).map(k=>CONTRIBUTION_TYPES.find(t=>t.key===k)?.label||k).join(' · ')}</p><h3 className="mt-2 text-lg font-bold text-primary">{m.title} {m.is_demo&&<span className="text-xs text-gray-500">실제 모집 아님</span>}</h3><p className="mt-4 text-sm text-gray-500">{m.application_start&&m.application_end?`${m.application_start} ~ ${m.application_end}`:m.application_period}</p><Link to="/activities" className="mt-6 rounded-md border border-primary py-2 text-center text-sm font-semibold text-primary hover:bg-primary hover:text-paper">자세히 보기</Link></article>)}</div>}</section>;
 }
 
 function CtaBanner() {

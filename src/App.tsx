@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { RequireAuth } from './components/auth/RequireAuth';
 import { SiteShell } from './components/layout/SiteShell';
 import { HomePage } from './pages/Home/HomePage';
 import { ActivitiesLayout } from './pages/Activities/ActivitiesLayout';
@@ -9,12 +10,15 @@ import { AwardsPage } from './pages/Awards/AwardsPage';
 import { RecordsPage } from './pages/Records/RecordsPage';
 import { AboutPage } from './pages/About/AboutPage';
 import { PartnersPage } from './pages/Partners/PartnersPage';
+import { LoginPage } from './pages/Login/LoginPage';
 import { AdminPage } from './pages/Admin/AdminPage';
 
 export function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route element={<SiteShell />}><Route path="login" element={<LoginPage />} /></Route>
+        <Route element={<RequireAuth />}>
         <Route element={<SiteShell />}>
           <Route index element={<HomePage />} />
           <Route path="activities" element={<ActivitiesLayout />}>
@@ -28,6 +32,8 @@ export function App() {
           <Route path="partners" element={<PartnersPage />} />
         </Route>
         <Route path="admin" element={<AdminPage />} />
+        <Route path="*" element={<HomePage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

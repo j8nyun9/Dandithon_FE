@@ -1,60 +1,13 @@
-import { useState } from 'react';
-import { Check, X } from 'lucide-react';
-import records from '../../mocks/records.json';
-import type { PracticeRecord } from '../../types';
-import { Logo } from '../../components/layout/Header';
-import { LevelBadge, StatusBadge, TypeChips } from '../../components/common/Badges';
-
-
-/** 운영자 화면 — 별도 레이아웃. 실제 승인·점수 재계산은 서버에서 수행 */
-export function AdminPage() {
-  const [list, setList] = useState(records as PracticeRecord[]);
-  const pending = list.filter(r => r.status === 'pending');
-  // TODO: 서버 승인/반려 API 호출로 교체
-  const decide = (id: string, status: 'approved' | 'rejected') =>
-    setList(l => l.map(r => (r.id === id ? { ...r, status } : r)));
-
-  return (
-    <div className="min-h-dvh bg-gray-100">
-      <header className="flex items-center justify-between bg-white px-6 py-4 shadow-sm">
-        <Logo light={false} />
-        <span className="rounded bg-primary px-2 py-1 text-xs text-paper">운영자</span>
-      </header>
-      <main className="mx-auto flex max-w-3xl flex-col gap-4 p-6">
-        <h1 className="text-xl font-bold text-primary">
-          협력 기관 활동 승인 대기 <span className="text-accent">{pending.length}</span>건
-        </h1>
-        {pending.length === 0 && <p className="text-sm text-gray-500">모든 인증을 처리했어요.</p>}
-        {pending.map(r => (
-          <div key={r.id} className="flex items-center gap-4 rounded-xl bg-white p-4">
-            <div className="flex-1">
-              <p className="text-xs text-gray-400">
-                {r.school} · {r.submitter} · {r.source} · {r.date}
-              </p>
-              <p className="font-semibold text-gray-800">{r.title}</p>
-              <div className="mt-2 flex gap-2">
-                <StatusBadge status={r.status} />
-                <LevelBadge level={r.level} />
-                <TypeChips types={r.types} />
-              </div>
-            </div>
-            <button
-              onClick={() => decide(r.id, 'rejected')}
-              className="flex items-center gap-1 rounded-lg border border-red-300 px-4 py-2 text-sm text-red-700"
-            >
-              <X size={16} />
-              반려
-            </button>
-            <button
-              onClick={() => decide(r.id, 'approved')}
-              className="flex items-center gap-1 rounded-lg bg-green-600 px-4 py-2 text-sm text-white"
-            >
-              <Check size={16} />
-              승인
-            </button>
-          </div>
-        ))}
-      </main>
-    </div>
-  );
+import {useEffect,useState} from 'react';
+import {Link} from 'react-router-dom';
+import {api,post,session,setSession,type Verification} from '../../services/api';
+import {Logo} from '../../components/layout/Header';
+import {MissionForm} from './MissionForm';
+import {MissionManagement} from './MissionManagement';
+export function AdminPage(){
+ const [records,setRecords]=useState<Verification[]>([]),[message,setMessage]=useState('');const current=session();
+ async function refresh(){setRecords(await api<Verification[]>('/verifications'));}
+ useEffect(()=>{if(current&&current.role!=='student')refresh().catch(e=>setMessage(e.message));},[]);
+ async function decide(r:Verification,status:'approved'|'rejected'){try{await post(`/missions/${r.mission_id}/verification`,{user_id:r.user_id,status});setMessage(status==='approved'?'담당자 확인으로 승인했습니다.':'반려했습니다.');await refresh();}catch(e){setMessage(e instanceof Error?e.message:'처리 실패');}}
+ return <div className="min-h-screen bg-gray-100"><header className="flex justify-between bg-white p-5"><Logo light={false}/><div><Link to="/" className="mr-4 underline">홈</Link>{current&&<button onClick={()=>{setSession(null);location.href='/login';}}>로그아웃</button>}</div></header><main className="mx-auto max-w-3xl space-y-4 p-6"><h1 className="text-2xl font-bold">운영자 실적 확인</h1>{!current?<p><Link className="underline" to="/login">관리자 또는 기관 계정 로그인</Link>이 필요합니다.</p>:current.role==='student'?<p>관리자 또는 기관 계정이 필요합니다.</p>:<><p className="text-sm text-gray-600">기관이 제공한 실적을 확인한 뒤 승인하세요. AI가 증빙을 검증하지 않습니다.</p>{message&&<p role="status">{message}</p>}{records.filter(r=>r.status==='pending').map(r=><article key={r.id} className="rounded-xl bg-white p-4"><b>{r.title}</b><p className="my-2 text-sm">참여자 ID {r.user_id} · 확인 대기</p><div className="flex gap-3"><button onClick={()=>decide(r,'rejected')} className="rounded border px-4 py-2">반려</button><button onClick={()=>decide(r,'approved')} className="rounded bg-primary px-4 py-2 text-white disabled:opacity-40">확인 후 승인</button></div></article>)}{!records.some(r=>r.status==='pending')&&<p>확인 대기 중인 요청이 없습니다.</p>}{current.role==='admin'&&<MissionForm />}<MissionManagement /></>}</main></div>;
 }

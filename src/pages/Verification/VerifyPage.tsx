@@ -1,139 +1,15 @@
-import { useState } from 'react';
-import { Camera, Link2, RefreshCw, ShieldCheck } from 'lucide-react';
-import records from '../../mocks/records.json';
-import activities from '../../mocks/activities.json';
-import type { Activity, PracticeRecord } from '../../types';
-import { LevelBadge, StatusBadge, TypeChips } from '../../components/common/Badges';
-
-const ME = '김OO'; // TODO: 로그인 사용자로 교체
-
-const portals = [
-  { id: '1365', name: '1365 자원봉사포털', desc: '행정안전부 자원봉사 실적' },
-  { id: 'VMS', name: 'VMS 사회복지자원봉사', desc: '사회복지 분야 봉사 실적' },
-];
-
-export function VerifyPage() {
-  // TODO: 실제 연동은 개인 동의 후 서버가 기관 API 호출
-  const [linked, setLinked] = useState<Record<string, boolean>>({ '1365': true, VMS: false });
-  const [activityId, setActivityId] = useState('');
-  const mine = (records as PracticeRecord[]).filter(r => r.submitter === ME);
-  const picked = (activities as Activity[]).find(a => a.id === activityId);
-
-  return (
-    <div className="grid gap-6 lg:grid-cols-2">
-      <div className="flex flex-col gap-6">
-        {/* 기관 연동 */}
-        <section className="rounded-xl border border-gray-200 bg-white p-6">
-          <h2 className="flex items-center gap-2 font-serif text-2xl font-bold text-primary">
-            <Link2 size={22} className="text-accent" /> 봉사 실적 연동
-          </h2>
-          <p className="mt-2 text-sm text-gray-500">
-            동의하면 1365·VMS에 등록된 봉사 실적을 자동으로 가져와 바로 인증합니다. 동의는 언제든 해제할 수 있어요.
-          </p>
-          <ul className="mt-6 flex flex-col gap-4">
-            {portals.map(p => (
-              <li key={p.id} className="flex items-center justify-between gap-4 rounded-lg border border-gray-200 p-4">
-                <div>
-                  <p className="font-semibold text-gray-800">{p.name}</p>
-                  <p className="text-xs text-gray-400">
-                    {linked[p.id] ? '연동됨 · 오늘 09:12 동기화' : p.desc}
-                  </p>
-                </div>
-                {linked[p.id] ? (
-                  <div className="flex items-center gap-2">
-                    <button aria-label="다시 불러오기" className="p-2 text-gray-400 hover:text-primary">
-                      <RefreshCw size={16} />
-                    </button>
-                    <button
-                      onClick={() => setLinked(l => ({ ...l, [p.id]: false }))}
-                      className="rounded-md border border-gray-300 px-4 py-2 text-xs text-gray-600"
-                    >
-                      연동 해제
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => setLinked(l => ({ ...l, [p.id]: true }))}
-                    className="rounded-md bg-primary px-4 py-2 text-xs font-semibold text-paper"
-                  >
-                    동의하고 연동
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        {/* 협력 기관 활동 */}
-        <section className="rounded-xl border border-gray-200 bg-white p-6">
-          <h2 className="flex items-center gap-2 font-serif text-2xl font-bold text-primary">
-            <ShieldCheck size={22} className="text-accent" /> 협력 기관 활동 인증
-          </h2>
-          <p className="mt-2 text-sm text-gray-500">
-            1365·VMS에 없는 활동은 등록된 협력 기관 활동만 인증할 수 있어요. 운영자가 확인합니다.
-          </p>
-          <div className="mt-6 flex flex-col gap-4">
-            <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
-              참여한 활동
-              <select
-                value={activityId}
-                onChange={e => setActivityId(e.target.value)}
-                className="rounded-md border border-gray-300 px-4 py-2 font-normal focus:border-primary focus:outline-none"
-              >
-                <option value="">등록된 활동 중에서 선택</option>
-                {(activities as Activity[]).map(a => (
-                  <option key={a.id} value={a.id}>
-                    {a.title}
-                  </option>
-                ))}
-              </select>
-            </label>
-            {picked && (
-              <p className="flex items-center gap-2 text-xs text-gray-500">
-                반영 유형 <TypeChips types={picked.types} />
-              </p>
-            )}
-            <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
-              참여 날짜
-              <input
-                type="date"
-                className="rounded-md border border-gray-300 px-4 py-2 font-normal focus:border-primary focus:outline-none"
-              />
-            </label>
-            <button className="flex items-center justify-center gap-2 rounded-md border border-dashed border-gray-400 py-6 text-sm text-gray-500 hover:bg-gray-50">
-              <Camera size={18} /> 증빙 첨부 (활동 확인서 · 헌혈증 등)
-            </button>
-            <p className="text-xs text-gray-400">증빙 파일은 운영자 확인용이며 공개 피드와 외부에 노출되지 않습니다.</p>
-            <button className="rounded-md bg-primary py-4 font-semibold text-paper hover:bg-primary-soft">제출하기</button>
-          </div>
-        </section>
-      </div>
-
-      <section>
-        <h2 className="mb-4 font-serif text-2xl font-bold text-primary">내 참여 이력</h2>
-        <ul className="flex flex-col gap-4">
-          {mine.map(r => (
-            <li key={r.id} className="rounded-xl border border-gray-200 bg-white p-4">
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <p className="font-semibold text-gray-800">{r.title}</p>
-                  <p className="mt-1 text-xs text-gray-400">
-                    {r.date} · {r.source}
-                  </p>
-                </div>
-                <StatusBadge status={r.status} />
-              </div>
-              <div className="mt-2 flex flex-wrap items-center gap-2">
-                <LevelBadge level={r.level} />
-                <TypeChips types={r.types} />
-              </div>
-              {r.status === 'rejected' && (
-                <p className="mt-2 text-xs text-gray-500">확인서가 잘 보이지 않았어요. 다시 올려 주시면 바로 확인할게요.</p>
-              )}
-            </li>
-          ))}
-        </ul>
-      </section>
-    </div>
-  );
+import {useEffect,useState} from 'react';
+import {Link} from 'react-router-dom';
+import {api,post,session,type Mission} from '../../services/api';
+type RecordItem={mission_id:number;title:string;status:string;updated_at:string};
+const statusLabel:Record<string,string>={applied:'신청 확인',started:'활동 중',pending:'확인 대기',approved:'확인 완료',rejected:'반려',cancelled:'취소'};
+export function VerifyPage(){
+ const [missions,setMissions]=useState<Mission[]>([]),[records,setRecords]=useState<RecordItem[]>([]),[candidates,setCandidates]=useState<{id:number;title:string}[]>([]),[id,setId]=useState(''),[message,setMessage]=useState('');
+ async function refresh(){const [m,r,c]=await Promise.all([api<Mission[]>('/me/verification-missions'),api<RecordItem[]>('/me/verifications'),api<{id:number;title:string}[]>('/me/application-candidates')]);setMissions(m);setRecords(r);setCandidates(c);}
+ useEffect(()=>{if(session()?.role==='student')refresh().catch(e=>setMessage(e.message));},[]);
+ async function confirmApplication(id:number){if(!window.confirm('기관의 공식 신청 절차를 완료했나요? 이 표시는 본인의 기록이며 기관의 신청 확인은 아닙니다.'))return;try{await post(`/missions/${id}/application-confirmation`);setMessage('신청 완료를 표시했습니다. 실제 신청 여부는 기관에서 확인합니다.');await refresh();}catch(e){setMessage(e instanceof Error?e.message:'신청 표시 실패');}}
+ async function submit(){try{await post(`/missions/${id}/submit`);setMessage('담당자 확인 요청을 보냈습니다. 증빙 제출 방식은 담당자에게 확인해 주세요.');setId('');await refresh();}catch(e){setMessage(e instanceof Error?e.message:'요청 실패');}}
+ if(!session())return <p>참여 확인을 요청하려면 <Link to="/login" className="underline">로그인</Link>해 주세요.</p>;
+ if(session()?.role!=='student')return <p>학생 계정으로 로그인해 주세요.</p>;
+ return <div className="grid gap-6 lg:grid-cols-2"><section className="rounded-xl border bg-white p-6"><h2 className="text-2xl font-bold">참여 확인 요청</h2><p className="mt-3 text-sm text-gray-600">신청 후 직접 완료를 표시한 활동만 선택할 수 있습니다. 신청 표시는 기관 확인이 아니며, 활동 완료 여부는 담당자가 확인합니다.</p>{candidates.length>0&&<div className="mt-4 rounded border p-3"><p className="text-sm font-semibold">신청 링크를 이용한 활동</p><p className="mt-1 text-xs text-gray-500">기관에서 신청을 마쳤다면 직접 표시해 주세요.</p>{candidates.map(c=><div key={c.id} className="mt-2 flex items-center justify-between gap-3 text-sm"><span>{c.title}</span><button onClick={()=>confirmApplication(c.id)} className="rounded border px-3 py-1">신청 완료 표시</button></div>)}</div>}<select aria-label="미션 선택" className="mt-5 w-full rounded border p-2" value={id} onChange={e=>setId(e.target.value)}><option value="">미션 선택</option>{missions.map(m=><option key={m.id} value={m.id}>{m.title}</option>)}</select>{missions.length===0&&<p className="mt-2 text-sm text-gray-500">확인 요청할 활동이 없습니다. 신청 후 활동 목록에서 신청 완료를 표시해 주세요.</p>}<button disabled={!id} onClick={submit} className="mt-4 rounded bg-primary px-4 py-2 text-white disabled:opacity-40">확인 요청</button>{message&&<p role="status" className="mt-4 text-sm">{message}</p>}</section><section><h2 className="text-2xl font-bold">내 참여 이력</h2><ul className="mt-4 space-y-3">{records.map(r=><li key={r.mission_id} className="rounded-xl border bg-white p-4"><b>{r.title}</b><p className="mt-2 text-sm">{statusLabel[r.status]||r.status}</p></li>)}</ul>{!records.length&&<p className="mt-4">참여 이력이 없습니다.</p>}</section></div>;
 }

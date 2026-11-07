@@ -44,7 +44,7 @@ export function Footer() {
       </div>
       <div className="border-t border-white/10">
         <p className="mx-auto max-w-6xl px-6 py-4 text-xs text-paper/40">
-          © 2026 단디보상운동 · 화면의 수치는 시연용 데이터입니다.
+          © 2026 단디보상운동
         </p>
       </div>
     </footer>

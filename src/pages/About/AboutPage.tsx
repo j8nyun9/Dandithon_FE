@@ -4,12 +4,12 @@ import { PageHeader, container } from '../../components/common/PageHeader';
 
 const steps = [
   { icon: Sparkles, title: '찾기', desc: '내어놓을 수 있는 것(시간·재능·헌혈)을 고르면 AI가 등록 행사를 추천합니다.' },
-  { icon: ShieldCheck, title: '인증하기', desc: '1365·VMS 실적을 연동하거나, 협력 기관 활동을 운영자가 확인합니다.' },
+  { icon: ShieldCheck, title: '인증하기', desc: '기관이 제공한 실적을 운영자가 확인합니다.' },
   { icon: School, title: '함께 오르기', desc: '인증된 참여가 6개 유형 육각형과 단디 지수가 되어 학기 리그 순위를 만듭니다.' },
 ];
 
 const verifyRoadmap = [
-  { phase: '지금', title: '1365 · VMS 연동', desc: '개인 동의를 받아 공개 API로 봉사 실적을 자동으로 가져옵니다.' },
+  { phase: '향후 검토', title: '1365 · VMS 연동', desc: '제3자 연동 가능 여부와 권한을 확인해야 합니다.' },
   { phase: '확장', title: '협력 기관 API', desc: '공개 API가 없는 기관은 협력 기관으로 등록하며 실적 API 제공을 요청합니다.' },
   { phase: '향후', title: 'AI 인증 보조', desc: '확인서·헌혈증 판독과 이상 탐지를 AI가 돕고, 최종 판단은 운영자가 합니다.' },
 ];

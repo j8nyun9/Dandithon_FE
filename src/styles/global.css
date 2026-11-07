@@ -2,13 +2,13 @@
 
 /* 디자인 토큰 — 임의 색상 하드코딩 금지, 아래 토큰만 사용 */
 @theme {
-  --color-primary: #1e2a4a;
-  --color-primary-deep: #141d35;
-  --color-primary-soft: #2c3a60;
-  --color-accent: #f26b1d;
-  --color-accent-deep: #b8461a;
-  --color-paper: #f5efe0;
-  --color-paper-deep: #e8dec6;
+  --color-primary: #142330;
+  --color-primary-deep: #0e1a24;
+  --color-primary-soft: #304350;
+  --color-accent: #b54a3a;
+  --color-accent-deep: #87372d;
+  --color-paper: #f1eae0;
+  --color-paper-deep: #ddd2c5;
   --color-ink: #2a2620;
 
   --font-sans: "Pretendard Variable", Pretendard, system-ui, sans-serif;
