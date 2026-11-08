@@ -1,0 +1,18 @@
+/* Separate copy/art columns prevent overlap; intrinsic image ratio prevents cropping. */
+.home-hero-stage{position:relative;max-width:1600px;margin-inline:auto;isolation:isolate}.home-hero-content{position:relative;z-index:2;padding-top:clamp(40px,6vw,80px);padding-bottom:36px;min-width:0}.home-hero-copy{position:relative;width:100%;max-width:650px;min-width:0}.home-hero-backdrop,.home-building-desktop{display:none}.home-building-image{display:block;width:100%;height:auto;max-width:100%;aspect-ratio:1640/959}.home-building-mobile{position:relative;width:100%;aspect-ratio:1640/959;pointer-events:none}.home-building-mobile .home-building-image{position:relative;width:100%;height:auto;z-index:1}.home-building-mobile>div{background:var(--color-accent-deep)}
+@media(min-width:768px) and (max-width:1199px){.home-hero-content{padding-top:48px;padding-bottom:28px}.home-building-mobile{width:min(88%,850px);margin-left:auto}}
+@media(min-width:1200px){.home-hero-stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;min-height:500px;padding-left:max(24px,calc((100% - 1104px)/2));column-gap:24px}.home-hero-content{grid-column:1;grid-row:1;width:100%;max-width:none;margin:0;padding:64px 0 72px}.home-hero-copy{width:100%;max-width:none}.home-hero-copy h1{font-size:clamp(34px,3vw,48px)}.home-hero-backdrop{display:block;position:absolute;inset:10% 0 0 55%;z-index:0;pointer-events:none}.home-hero-red{position:absolute;inset:0;background:var(--color-accent-deep)}.home-building-desktop{display:flex;align-items:flex-end;grid-column:2;grid-row:1;position:relative;align-self:stretch;width:100%;min-width:0;z-index:1;pointer-events:none}.home-building-desktop .home-building-image{position:relative;width:100%;height:auto;max-height:100%;object-fit:contain;object-position:right bottom;align-self:flex-end}.home-building-mobile{display:none}}
+
+/* Ground the building on the hero edge without a floating image frame. */
+.home-hero{line-height:normal}.home-hero-stage{padding-bottom:0}.home-building-mobile{margin-bottom:0;line-height:0;display:flex;align-items:flex-end}.home-building-mobile .home-building-image{margin:0;vertical-align:bottom}
+@media(min-width:1200px){.home-hero-stage{max-width:none;align-items:stretch}.home-building-desktop{align-self:stretch;flex-direction:column;justify-content:flex-end;align-items:stretch;margin:0;padding:0;line-height:0}.home-building-desktop .home-building-image{display:block;position:static;align-self:stretch;width:100%;height:auto;max-height:none;margin:auto 0 0;vertical-align:bottom}.home-building-mobile{display:none}}
+
+/* Let the foundation continue below the section edge instead of showing a cutout base. */
+.home-building-mobile{overflow:hidden}.home-building-mobile .home-building-image{transform:translateY(6%)}
+@media(min-width:1200px){.home-building-desktop{overflow:hidden}.home-building-desktop .home-building-image{transform:translateY(6%)}.home-building-mobile{display:none}}
+
+/* Center the complete hero composition on wide screens. */
+@media(min-width:1200px){.home-hero-stage{width:100%;max-width:1280px;margin-inline:auto;padding-left:24px;padding-right:24px;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:32px}.home-hero-content{margin:0;padding-left:0;padding-right:0}.home-hero-copy{margin:0;max-width:none}.home-building-desktop{margin:0;width:100%}.home-hero-backdrop{right:24px}}
+
+/* On stacked layouts, show copy only rather than moving the artwork below it. */
+@media(max-width:1199px){.home-building-mobile,.home-building-desktop,.home-hero-backdrop{display:none}.home-hero-content{padding-bottom:clamp(40px,6vw,72px)}}

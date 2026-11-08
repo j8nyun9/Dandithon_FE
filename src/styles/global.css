@@ -33,3 +33,27 @@ body { font-family: var(--font-sans); color: var(--color-gray-900); -webkit-font
     radial-gradient(circle at 15% 20%, rgb(255 255 255 / 0.04), transparent 40%),
     radial-gradient(circle at 85% 90%, rgb(0 0 0 / 0.25), transparent 50%);
 }
+
+/* Shared text wrapping only: preserve typography, spacing, and wording. */
+@layer base {
+  body {
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+  }
+  p, li, dd, dt, td, th, label, figcaption {
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+    text-wrap: pretty;
+  }
+  button, a {
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+  pre, code {
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+}

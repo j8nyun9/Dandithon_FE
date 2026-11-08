@@ -14,8 +14,8 @@ export const navItems = [
 
 export function Logo({ light = true }: { light?: boolean }) {
   return (
-    <Link to="/" className={`flex items-center gap-2 font-serif text-xl font-bold ${light ? 'text-paper' : 'text-primary'}`}>
-      <svg viewBox="0 0 24 24" className="size-6" aria-hidden="true">
+    <Link to="/" className={`flex shrink-0 items-center gap-2 whitespace-nowrap font-serif text-lg font-bold sm:text-xl ${light ? 'text-paper' : 'text-primary'}`}>
+      <svg viewBox="0 0 24 24" className="size-5 shrink-0 sm:size-6" aria-hidden="true">
         <g fill="currentColor">
           {[0, 60, 120, 180, 240, 300].map(r => (
             <ellipse key={r} cx="12" cy="6" rx="3" ry="5" transform={`rotate(${r} 12 12)`} opacity="0.9" />
@@ -35,17 +35,17 @@ export function Header() {
 
   return (
     <header className="navy-texture sticky top-0 z-30 border-b border-white/10">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
         <Logo />
 
-        <nav className="hidden h-full items-center gap-6 md:flex">
+        <nav className="hidden h-full shrink-0 items-center gap-4 xl:flex">
           {navItems.map(n => (
             <NavLink
               key={n.to}
               to={n.to}
               end={n.to === '/'}
               className={({ isActive }) =>
-                `relative flex h-full items-center px-2 text-sm transition ${
+                `relative flex h-full shrink-0 items-center whitespace-nowrap px-2 text-sm transition ${
                   isActive ? 'font-semibold text-paper' : 'text-paper/70 hover:text-paper'
                 }`
               }
@@ -60,16 +60,16 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
-          {current ? <button onClick={() => setSession(null)} className="rounded-md bg-paper px-4 py-1 text-sm font-semibold text-primary">로그아웃 ({current.name || current.role})</button> : <Link to="/login" className="rounded-md bg-paper px-4 py-1 text-sm font-semibold text-primary">로그인</Link>}
-          <button aria-label="메뉴" className="p-2 text-paper md:hidden" onClick={() => setOpen(o => !o)}>
+        <div className="flex shrink-0 items-center gap-2">
+          {current ? <button onClick={() => setSession(null)} className="shrink-0 whitespace-nowrap rounded-md bg-paper px-3 py-2 text-sm font-semibold text-primary">로그아웃<span className="hidden sm:inline"> ({current.name || current.role})</span></button> : <Link to="/login" className="shrink-0 whitespace-nowrap rounded-md bg-paper px-3 py-2 text-sm font-semibold text-primary">로그인</Link>}
+          <button aria-label="메뉴" aria-expanded={open} className="shrink-0 p-2 text-paper xl:hidden" onClick={() => setOpen(o => !o)}>
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
       {open && (
-        <nav className="border-t border-white/10 px-6 pb-4 md:hidden">
+        <nav className="border-t border-white/10 px-6 pb-4 xl:hidden">
           {navItems.map(n => (
             <NavLink
               key={n.to}
@@ -77,7 +77,7 @@ export function Header() {
               end={n.to === '/'}
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
-                `block border-b border-white/10 py-4 text-sm ${isActive ? 'font-semibold text-accent' : 'text-paper/80'}`
+                `block whitespace-nowrap border-b border-white/10 py-4 text-sm ${isActive ? 'font-semibold text-accent' : 'text-paper/80'}`
               }
             >
               {n.label}
@@ -88,6 +88,7 @@ export function Header() {
     </header>
   );
 }
+
 
 
 
