@@ -38,14 +38,14 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
         <Logo />
 
-        <nav className="hidden h-full shrink-0 items-center gap-4 xl:flex">
+        <nav className="hidden h-full shrink-0 items-center gap-1 md:flex lg:gap-3 xl:gap-4">
           {navItems.map(n => (
             <NavLink
               key={n.to}
               to={n.to}
               end={n.to === '/'}
               className={({ isActive }) =>
-                `relative flex h-full shrink-0 items-center whitespace-nowrap px-2 text-sm transition ${
+                `relative flex h-full shrink-0 items-center whitespace-nowrap px-1.5 text-[13px] transition lg:px-2 lg:text-sm ${
                   isActive ? 'font-semibold text-paper' : 'text-paper/70 hover:text-paper'
                 }`
               }
@@ -61,15 +61,15 @@ export function Header() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
-          {current ? <button onClick={() => setSession(null)} className="shrink-0 whitespace-nowrap rounded-md bg-paper px-3 py-2 text-sm font-semibold text-primary">로그아웃<span className="hidden sm:inline"> ({current.name || current.role})</span></button> : <Link to="/login" className="shrink-0 whitespace-nowrap rounded-md bg-paper px-3 py-2 text-sm font-semibold text-primary">로그인</Link>}
-          <button aria-label="메뉴" aria-expanded={open} className="shrink-0 p-2 text-paper xl:hidden" onClick={() => setOpen(o => !o)}>
+          {current ? <button onClick={() => setSession(null)} className="shrink-0 whitespace-nowrap rounded-md bg-paper px-3 py-2 text-sm font-semibold text-primary">로그아웃<span className="hidden lg:inline"> ({current.name || current.role})</span></button> : <Link to="/login" className="shrink-0 whitespace-nowrap rounded-md bg-paper px-3 py-2 text-sm font-semibold text-primary">로그인</Link>}
+          <button aria-label="메뉴" aria-expanded={open} className="shrink-0 p-2 text-paper md:hidden" onClick={() => setOpen(o => !o)}>
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
       {open && (
-        <nav className="border-t border-white/10 px-6 pb-4 xl:hidden">
+        <nav className="border-t border-white/10 px-6 pb-4 md:hidden">
           {navItems.map(n => (
             <NavLink
               key={n.to}

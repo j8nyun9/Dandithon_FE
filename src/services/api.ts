@@ -13,10 +13,42 @@ export type Verification = { id:number; mission_id:number; user_id:number; statu
 export type League = { semester_id:number; rules:string; schools:{school_id:number;school:string;overall:number|null;completed_count:number;student_count:number|null;reference_year:number|null;source_url:string|null;is_estimate:boolean;axes:Record<string,number>}[] };
 export function session():Session|null { try { const value=JSON.parse(sessionStorage.getItem('dandi-session') || 'null') as Session|null; if(!value || typeof value.token!=='string') return null; const parts=value.token.split('.'); const expiry=Number(parts[1]); if(parts.length!==3 || !Number.isFinite(expiry) || expiry*1000<=Date.now()) return null; return value; } catch {return null;} }
 export function setSession(value:Session|null) { if(value) sessionStorage.setItem('dandi-session',JSON.stringify(value)); else sessionStorage.removeItem('dandi-session'); window.dispatchEvent(new Event('dandi-session')); }
-export async function api<T>(path:string,options:RequestInit={}):Promise<T> {
- const token=session()?.token; const response=await fetch('/api'+path,{...options,headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`} : {}),...options.headers}});
- const body=await response.json(); if(response.status===401 && path!=='/auth/login') setSession(null); if(!response.ok) throw new Error(body.error?.message || `요청 오류 (${response.status})`); return body.data as T;
+// AI requests can take longer than ordinary page data requests.
+function requestTimeout(path: string) {
+ return path === '/ai/recommend' ? 100000 : 60000;
 }
+
+export async function api<T>(path: string, options: RequestInit = {}): Promise<T> {
+ const token = session()?.token;
+ let response: Response;
+ try {
+  response = await fetch('/api' + path, {
+   ...options,
+   signal: options.signal ?? AbortSignal.timeout(requestTimeout(path)),
+   headers: {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...options.headers,
+   },
+  });
+ } catch (error) {
+  if (error instanceof DOMException && error.name === 'AbortError') throw error;
+  const timedOut = error instanceof DOMException && error.name === 'TimeoutError';
+  throw new Error(timedOut
+   ? '서버 응답이 지연되고 있습니다. 잠시 후 다시 시도해 주세요.'
+   : '서버에 연결하지 못했습니다. 네트워크 연결을 확인하고 다시 시도해 주세요.');
+ }
+ if (response.status === 401 && path !== '/auth/login') setSession(null);
+ let body;
+ try {
+  body = await response.json();
+ } catch {
+  throw new Error('서버 응답을 확인하지 못했습니다. 잠시 후 다시 시도해 주세요.');
+ }
+ if (!response.ok) throw new Error(body.error?.message || `요청 오류 (${response.status})`);
+ return body.data as T;
+}
+
 export const post = <T>(path:string,body:unknown={}) => api<T>(path,{method:'POST',body:JSON.stringify(body)});
 export const contractApi={schools:()=>api<SchoolContract[]>('/v1/schools'),me:()=>api<UserContract>('/v1/me'),missions:()=>api<MissionContract[]>('/v1/missions'),participations:()=>api<ParticipationContract[]>('/v1/me/participations'),clicks:()=>api<ApplicationClickContract[]>('/v1/me/clicks')};
 export type Activity = { id:string;title:string;minutes:number;points:number };
