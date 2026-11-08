@@ -9,6 +9,7 @@ export const navItems = [
   { to: '/league', label: '대학 리그' },
   { to: '/records', label: '의연록' },
   { to: '/about', label: '소개' },
+  { to: '/my', label: '마이페이지' },
 ];
 
 export function Logo({ light = true }: { light?: boolean }) {
@@ -90,4 +91,5 @@ export function Header() {
     </header>
   );
 }
+
 

@@ -1,18 +1,71 @@
-import {useEffect,useState} from 'react';
-import {Link} from 'react-router-dom';
-import {api,session,type League} from '../../services/api';
-import {CONTRIBUTION_TYPES} from '../../utils/contribution';
-import {PageHeader,container} from '../../components/common/PageHeader';
-import {RadarHex} from '../../components/common/RadarHex';
-import type {Hexagon} from '../../types';
-export function RankingPage(){
- const [data,setData]=useState<League|null>(null),[error,setError]=useState(''),[selected,setSelected]=useState<number|null>(null);const current=session();
- useEffect(()=>{api<League>('/league?semester_id=1').then(d=>{if(!Array.isArray(d.schools)||d.schools.some(s=>!s.axes||CONTRIBUTION_TYPES.some(t=>typeof s.axes[t.key]!=='number'||!Number.isFinite(s.axes[t.key])))){setError('봉사 유형 변경을 적용하려면 서버를 종료한 뒤 다시 실행해 주세요.');return;}setData(d);setSelected(d.schools.find(s=>s.school_id===current?.school_id)?.school_id||d.schools[0]?.school_id||null);}).catch(e=>setError(e.message));},[]);
- const schools=data?.schools||[],selectedSchool=schools.find(s=>s.school_id===selected),max=Math.max(1,...schools.flatMap(s=>Object.values(s.axes)));
- const ranked=schools.filter(s=>s.overall!==null);const average=Object.fromEntries(CONTRIBUTION_TYPES.map(t=>[t.key,ranked.length?ranked.reduce((sum,s)=>sum+(s.axes[t.key]||0),0)/ranked.length:0])) as Hexagon;
- return <><PageHeader eyebrow="UNIVERSITY LEAGUE" title="대학 리그" desc="승인된 사회공헌 활동을 학기별 학교의 참여 성과로 보여줍니다." right={<div className="w-full rounded-xl border border-white/20 p-5 text-sm text-paper/80 md:w-96">2026년 2학기 · 관리자 확인 실적 기준</div>}/><div className={`${container} py-16`}>
- {error?<p role="alert">{error}</p>:!data?<p>불러오는 중입니다.</p>:<><div className="mb-6 flex flex-wrap justify-between gap-4"><p className="text-sm text-gray-500">승인된 활동 건수 ÷ 학교 전체 재학생 수 × 1,000으로 계산합니다. 1인당 참여율이 아닌 1,000명당 완료 건수입니다.</p></div><div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
- <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white"><table className="w-full min-w-[450px] text-sm"><thead className="bg-gray-50 text-left text-xs text-gray-500"><tr><th className="px-6 py-4">순위</th><th className="px-4 py-4">학교</th><th className="px-4 py-4">주요 분야</th><th className="px-6 py-4 text-right">1,000명당 완료</th></tr></thead><tbody>{schools.map((s,i)=>{const top=CONTRIBUTION_TYPES.reduce((a,b)=>(s.axes[b.key]||0)>(s.axes[a.key]||0)?b:a);return <tr key={s.school_id} onClick={()=>setSelected(s.school_id)} className={`cursor-pointer border-t border-gray-100 ${selected===s.school_id?'bg-paper':'hover:bg-gray-50'}`}><td className="px-6 py-4 font-serif text-xl font-black text-accent">{s.overall===null?'—':i+1}</td><td className="px-4 py-4 font-semibold">{s.school}{s.school_id===current?.school_id&&<span className="ml-2 rounded bg-primary px-1 text-[10px] text-paper">우리 학교</span>}</td><td className="px-4 py-4 text-xs text-accent-deep">{(s.axes[top.key]||0)>0?top.label:'실적 없음'}</td><td className="px-6 py-4 text-right text-lg font-bold text-primary">{s.overall??'미산정'}</td></tr>})}</tbody></table></div>
- {selectedSchool&&<div className="h-fit rounded-xl border border-gray-200 bg-white p-6 lg:sticky lg:top-24"><div className="flex items-end justify-between"><div><p className="text-xs text-gray-500">분야별 1,000명당 완료 건수</p><h2 className="font-serif text-2xl font-bold text-primary">{selectedSchool.school}</h2>{typeof selectedSchool.student_count==='number'&&Number.isFinite(selectedSchool.student_count)&&<p className="mt-1 text-xs text-gray-500">재학생 수 {selectedSchool.student_count.toLocaleString()}명</p>}</div><div className="text-right text-xs text-gray-500"><p>━ 선택 학교</p><p>┄ 학교 평균</p></div></div>{selectedSchool.overall===null?<p className="mt-6 text-sm text-gray-500">학교 재학생 수를 확인하면 순위와 분야별 수치를 표시합니다. 승인된 활동 {selectedSchool.completed_count}건</p>:<><RadarHex values={selectedSchool.axes as Hexagon} compare={average} max={max} valueSuffix="" className="mx-auto mt-4 w-full max-w-sm"/><ul className="mt-4 grid grid-cols-2 gap-2 text-xs">{CONTRIBUTION_TYPES.map(t=><li key={t.key} className="flex justify-between rounded-md bg-gray-50 px-2 py-1"><span>{t.label}</span><span className="font-semibold text-primary">{selectedSchool.axes[t.key]||0}</span></li>)}</ul><p className="mt-4 text-xs text-gray-400">각 축의 최대 눈금은 현재 학교 중 가장 큰 축 값({max})입니다. 값은 재학생 1,000명당 분야별 완료 건수이며 복합 활동은 가중치를 나눕니다.</p></>}</div>}
- </div></>}</div></>;
+import { useEffect, useState } from 'react';
+import { useHomeData } from '../../hooks/useHomeData';
+import { type League, type UserContract } from '../../services/api';
+import { CONTRIBUTION_TYPES } from '../../utils/contribution';
+import { PageHeader, container } from '../../components/common/PageHeader';
+import { RadarHex } from '../../components/common/RadarHex';
+import type { Hexagon } from '../../types';
+
+type School = League['schools'][number] & { rank?: number | null; primary_category?: string | null };
+type LeagueData = Omit<League, 'schools'> & { semester_name?: string; schools: School[] };
+const number = (value: number) => value.toLocaleString('ko-KR', { maximumFractionDigits: 4 });
+const validAxes = (school: School) => school.axes && CONTRIBUTION_TYPES.every(t => typeof school.axes[t.key] === 'number' && Number.isFinite(school.axes[t.key]) && school.axes[t.key] >= 0);
+
+export function RankingPage() {
+  const { data, error, retry, loggedIn } = useHomeData<LeagueData>('/league');
+  const profile = useHomeData<UserContract>(loggedIn ? '/v1/me' : null);
+  const [selected, setSelected] = useState<number | null>(null);
+  const schools = Array.isArray(data?.schools) ? data.schools : [];
+  const invalid = !!data && (!Array.isArray(data.schools) || schools.some(s => !validAxes(s) || (s.overall !== null && (typeof s.overall !== 'number' || !Number.isFinite(s.overall) || s.overall < 0))));
+  useEffect(() => {
+    if (!data || invalid) return;
+    setSelected(previous => schools.some(s => s.school_id === previous) ? previous : schools.find(s => s.school_id === profile.data?.school_id)?.school_id ?? schools[0]?.school_id ?? null);
+  }, [data, invalid]);
+  useEffect(() => { if (profile.data?.school_id && schools.some(s => s.school_id === profile.data?.school_id)) setSelected(profile.data.school_id); }, [profile.data?.school_id]);
+  const selectedSchool = schools.find(s => s.school_id === selected);
+  const measured = schools.filter(s => s.overall !== null);
+  const maxValue = invalid ? 0 : Math.max(0, ...measured.flatMap(s => CONTRIBUTION_TYPES.map(t => s.axes[t.key])));
+  const axisMax = maxValue > 0 ? maxValue : 1;
+  const average = Object.fromEntries(CONTRIBUTION_TYPES.map(t => [t.key, measured.length ? measured.reduce((sum, s) => sum + s.axes[t.key], 0) / measured.length : 0])) as Hexagon;
+  const problem = error || (invalid ? '서버의 리그 데이터 형식을 확인할 수 없습니다.' : '');
+  return <>
+    <PageHeader eyebrow="UNIVERSITY LEAGUE" title="대학 리그" desc="승인된 사회공헌 활동을 학기별 학교의 참여 성과로 보여줍니다." right={<div className="w-full rounded-xl border border-white/20 p-5 text-sm text-paper/80 md:w-96">26년도 2학기</div>} />
+    <div className={`${container} py-16`}>
+      {problem ? <div role="alert"><p>{error || '서버의 리그 데이터 형식을 확인할 수 없습니다.'}</p><button className="mt-3 underline" onClick={retry}>다시 불러오기</button></div> : !data ? <p role="status">리그 정보를 불러오는 중입니다.</p> : schools.length === 0 ? <p className="rounded-xl bg-white p-6">등록된 대학 리그 정보가 없습니다.</p> : <>
+        <p className="mb-6 text-sm text-gray-500">{data.rules}</p>
+        {profile.error && <p role="status" className="mb-4 text-sm text-gray-500">내 학교 정보를 가져오지 못했습니다. 공개 리그는 확인할 수 있습니다. <button className="underline" onClick={profile.retry}>내 정보 다시 조회</button></p>}
+        <div className="grid gap-6 lg:grid-cols-[1.3fr_1fr]">
+          <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white"><table className="w-full min-w-[450px] text-sm"><thead className="bg-gray-50 text-left text-xs text-gray-500"><tr><th className="px-6 py-4">순위</th><th className="px-4 py-4">학교</th><th className="px-4 py-4">주요 분야</th><th className="px-6 py-4 text-right">1,000명당 완료</th></tr></thead><tbody>
+            {schools.map(s => {
+              const top = CONTRIBUTION_TYPES.reduce((a, b) => s.axes[b.key] > s.axes[a.key] ? b : a);
+              // Prefer an explicit backend rank. Legacy responses use backend-sorted order.
+              const rank = s.overall === null ? null : s.rank !== undefined ? s.rank : measured.indexOf(s) + 1;
+              const category = s.primary_category !== undefined ? CONTRIBUTION_TYPES.find(t => t.key === s.primary_category)?.label : s.axes[top.key] > 0 ? top.label : null;
+              return <tr key={s.school_id} onClick={() => setSelected(s.school_id)} className={`cursor-pointer border-t border-gray-100 ${selected === s.school_id ? 'bg-paper' : 'hover:bg-gray-50'}`}>
+                <td className="px-6 py-4 font-serif text-xl font-black text-accent">{rank ?? '—'}</td>
+                <td className="px-4 py-4"><button onClick={() => setSelected(s.school_id)} aria-pressed={selected === s.school_id} className="text-left font-semibold underline-offset-4 hover:underline">{s.school}</button>{s.school_id === profile.data?.school_id && <span className="ml-2 rounded bg-primary px-1 text-[10px] text-paper">우리 학교</span>}</td>
+                <td className="px-4 py-4 text-xs text-accent-deep">{category ?? '실적 없음'}</td><td className="px-6 py-4 text-right text-lg font-bold text-primary">{s.overall === null ? '미산정' : number(s.overall)}</td>
+              </tr>;
+            })}
+          </tbody></table></div>
+          {selectedSchool && <section className="h-fit rounded-xl border border-gray-200 bg-white p-6 lg:sticky lg:top-24" aria-label="선택 대학 상세">
+            <p className="text-xs text-gray-500">분야별 1,000명당 완료 건수</p><h2 className="font-serif text-2xl font-bold text-primary">{selectedSchool.school}</h2>
+            <p className="mt-2 text-xs text-gray-500">재학생 수 {selectedSchool.student_count === null ? '미등록' : `${number(selectedSchool.student_count)}명`}{selectedSchool.is_estimate ? ' · 시연용 추정치' : selectedSchool.reference_year ? ` · ${selectedSchool.reference_year}년 기준` : ''}</p>
+            {selectedSchool.source_url?.startsWith('https://') && <a className="mt-2 inline-block text-xs underline" href={selectedSchool.source_url} target="_blank" rel="noreferrer">재학생 수 출처 확인</a>}
+            <p className="mt-3 text-sm text-gray-600">승인 완료 활동 {number(selectedSchool.completed_count)}건</p>
+            {selectedSchool.overall === null ? <p className="mt-6 text-sm text-gray-500">재학생 수가 확인되면 순위와 분야별 환산 수치를 표시합니다.</p> : <>
+              <div className="mt-4 text-right text-xs text-gray-500"><p>━ 선택 학교</p><p>┄ 산정 가능한 학교 평균</p></div>
+              <RadarHex values={selectedSchool.axes as Hexagon} compare={average} max={axisMax} valueSuffix="" className="mx-auto mt-4 w-full max-w-sm" />
+              <ul className="mt-4 grid grid-cols-2 gap-2 text-xs">{CONTRIBUTION_TYPES.map(t => <li key={t.key} className="flex justify-between gap-2 rounded-md bg-gray-50 px-2 py-1"><span>{t.label}</span><span className="font-semibold text-primary">{number(selectedSchool.axes[t.key])}</span></li>)}</ul>
+              <p className="mt-4 text-xs text-gray-400">학교 평균은 미산정 학교를 제외한 {measured.length}개교의 단순 평균입니다. {maxValue > 0 ? `그래프 최대 눈금은 ${number(axisMax)}입니다.` : '모든 분야 실적이 0이어서 그래프 눈금은 1로 표시합니다.'} 수치는 재학생 1,000명당 분야별 완료 건수입니다.</p>
+            </>}
+          </section>}
+        </div>
+      </>}
+    </div>
+  </>;
 }
+
+
+
+

@@ -1,3 +1,4 @@
+import { MyPage } from './pages/MyPage/MyPage';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { RequireAuth } from './components/auth/RequireAuth';
 import { SiteShell } from './components/layout/SiteShell';
@@ -24,7 +25,7 @@ export function App() {
             <Route path="verify" element={<VerifyPage />} />
           </Route>
           <Route path="league" element={<RankingPage />} />
-          <Route path="records" element={<RecordsPage />} />
+          <Route path="records" element={<RecordsPage />} /><Route element={<RequireAuth />}><Route path="my" element={<MyPage />} /></Route>
           <Route path="about" element={<AboutPage />} />
           <Route path="partners" element={<PartnersPage />} />
         </Route>
@@ -34,4 +35,5 @@ export function App() {
     </BrowserRouter>
   );
 }
+
 
