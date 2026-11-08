@@ -10,10 +10,11 @@ type Props = {
   labels?: boolean;
   className?: string;
   valueSuffix?: string;
+  valueDecimals?: number;
 };
 
 /** 사회공헌 6유형 육각형 */
-export function RadarHex({ values, compare, max = 70, tone = 'light', labels = true, className = '', valueSuffix = '%' }: Props) {
+export function RadarHex({ values, compare, max = 70, tone = 'light', labels = true, className = '', valueSuffix = '%', valueDecimals = 2 }: Props) {
   const size = 300;
   const c = size / 2;
   const r = labels ? 92 : 130;
@@ -63,7 +64,7 @@ export function RadarHex({ values, compare, max = 70, tone = 'light', labels = t
             <text key={t.key} x={x} y={y} textAnchor="middle" dominantBaseline="middle" className={`${label} text-[11px]`}>
               <tspan x={x}>{t.label}</tspan>
               <tspan x={x} dy="14" className={`font-bold ${dark ? 'fill-paper' : 'fill-primary'}`}>
-                {Number(safeValue(values[t.key]).toFixed(2))}{valueSuffix}
+                {Number(safeValue(values[t.key]).toFixed(valueDecimals))}{valueSuffix}
               </tspan>
             </text>
           );

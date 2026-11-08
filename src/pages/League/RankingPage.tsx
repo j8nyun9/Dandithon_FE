@@ -15,6 +15,7 @@ export function RankingPage() {
   const { data, error, retry, loggedIn } = useHomeData<LeagueData>('/league');
   const profile = useHomeData<UserContract>(loggedIn ? '/v1/me' : null);
   const [selected, setSelected] = useState<number | null>(null);
+  const [zoomed, setZoomed] = useState(true);
   const schools = Array.isArray(data?.schools) ? data.schools : [];
   const invalid = !!data && (!Array.isArray(data.schools) || schools.some(s => !validAxes(s) || (s.overall !== null && (typeof s.overall !== 'number' || !Number.isFinite(s.overall) || s.overall < 0))));
   useEffect(() => {
@@ -25,7 +26,10 @@ export function RankingPage() {
   const selectedSchool = schools.find(s => s.school_id === selected);
   const measured = schools.filter(s => s.overall !== null);
   const maxValue = invalid ? 0 : Math.max(0, ...measured.flatMap(s => CONTRIBUTION_TYPES.map(t => s.axes[t.key])));
-  const axisMax = maxValue > 0 ? maxValue : 1;
+  // Shared scale across all schools; keep real values and round the ceiling up.
+  const magnitude = maxValue > 0 ? 10 ** Math.floor(Math.log10(maxValue)) : 1;
+  const expandedMax = maxValue > 0 ? [1, 2, 5, 10].find(step => step * magnitude >= maxValue)! * magnitude : 1;
+  const axisMax = zoomed ? expandedMax : Math.max(1, maxValue);
   const average = Object.fromEntries(CONTRIBUTION_TYPES.map(t => [t.key, measured.length ? measured.reduce((sum, s) => sum + s.axes[t.key], 0) / measured.length : 0])) as Hexagon;
   const problem = error || (invalid ? '서버의 리그 데이터 형식을 확인할 수 없습니다.' : '');
   return <>
@@ -54,10 +58,12 @@ export function RankingPage() {
             {selectedSchool.source_url?.startsWith('https://') && <a className="mt-2 inline-block text-xs underline" href={selectedSchool.source_url} target="_blank" rel="noreferrer">재학생 수 출처 확인</a>}
             <p className="mt-3 text-sm text-gray-600">승인 완료 활동 {number(selectedSchool.completed_count)}건</p>
             {selectedSchool.overall === null ? <p className="mt-6 text-sm text-gray-500">재학생 수가 확인되면 순위와 분야별 환산 수치를 표시합니다.</p> : <>
+              <div className="mt-5 flex flex-wrap gap-2" aria-label="그래프 눈금 선택">{[{label:'확대 보기',value:true},{label:'1 기준 보기',value:false}].map(option=><button key={option.label} aria-pressed={zoomed===option.value} onClick={()=>setZoomed(option.value)} className={`rounded border px-3 py-2 text-xs ${zoomed===option.value?'border-primary bg-primary text-paper':'border-gray-200 text-primary'}`}>{option.label}</button>)}</div>
+              <p className="mt-3 text-xs text-accent-deep" role="status">{zoomed?'현재 실적을 확대해서 비교합니다.':'최대 눈금을 최소 1로 표시합니다.'} 최대 눈금 {number(axisMax)}건 / 재학생 1,000명</p>
               <div className="mt-4 text-right text-xs text-gray-500"><p>━ 선택 학교</p><p>┄ 산정 가능한 학교 평균</p></div>
-              <RadarHex values={selectedSchool.axes as Hexagon} compare={average} max={axisMax} valueSuffix="" className="mx-auto mt-4 w-full max-w-sm" />
+              <RadarHex values={selectedSchool.axes as Hexagon} compare={average} max={axisMax} valueDecimals={4} valueSuffix="" className="mx-auto mt-4 w-full max-w-sm" />
               <ul className="mt-4 grid grid-cols-2 gap-2 text-xs">{CONTRIBUTION_TYPES.map(t => <li key={t.key} className="flex justify-between gap-2 rounded-md bg-gray-50 px-2 py-1"><span>{t.label}</span><span className="font-semibold text-primary">{number(selectedSchool.axes[t.key])}</span></li>)}</ul>
-              <p className="mt-4 text-xs text-gray-400">학교 평균은 미산정 학교를 제외한 {measured.length}개교의 단순 평균입니다. {maxValue > 0 ? `그래프 최대 눈금은 ${number(axisMax)}입니다.` : '모든 분야 실적이 0이어서 그래프 눈금은 1로 표시합니다.'} 수치는 재학생 1,000명당 분야별 완료 건수입니다.</p>
+              <p className="mt-4 text-xs text-gray-400">학교 평균은 미산정 학교를 제외한 {measured.length}개교의 단순 평균입니다. 모든 학교에 같은 눈금을 적용하며 보기 전환은 실제 수치나 순위를 바꾸지 않습니다. 수치는 백분율이 아닌 재학생 1,000명당 분야별 승인 실적입니다.</p>
             </>}
           </section>}
         </div>
@@ -65,6 +71,7 @@ export function RankingPage() {
     </div>
   </>;
 }
+
 
 
 
