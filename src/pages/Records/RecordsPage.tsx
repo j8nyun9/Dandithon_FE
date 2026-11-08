@@ -1,4 +1,6 @@
-import { useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { session } from '../../services/api';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useHomeData } from '../../hooks/useHomeData';
 import { PageHeader, container } from '../../components/common/PageHeader';
 import './RecordsPage.css';
@@ -13,7 +15,9 @@ const DEFAULT_SCHOOLS = [
   {id:5,name:'대구대학교'},
 ];
 export function RecordsPage() {
-  const {data,error,loading,retry} = useHomeData<Ledger>('/ledger?semester_id=1');
+  const [loggedIn,setLoggedIn] = useState(() => !!session());
+  useEffect(() => {const update=()=>setLoggedIn(!!session());window.addEventListener('dandi-session',update);return()=>window.removeEventListener('dandi-session',update);}, []);
+  const {data,error,loading,retry} = useHomeData<Ledger>(loggedIn?'/ledger?semester_id=1':null);
   const [schoolId,setSchoolId] = useState<number|null>(null);
   const [query,setQuery] = useState('');
   const [page,setPage] = useState(1);
@@ -31,7 +35,7 @@ export function RecordsPage() {
   return <>
     <PageHeader eyebrow="DIGITAL LEDGER" title="디지털 의연록" desc="한 시즌 동안 봉사로 함께한 이들의 이름을, 소속 학교와 함께 기록합니다." />
     <div className={`${container} py-12`}>
-      {error ? <div role="alert" className="rounded-xl bg-white p-8"><p>시즌 의연록을 불러오지 못했습니다.</p><p className="mt-2 text-sm text-gray-500">{error}</p><button onClick={retry} className="mt-3 underline">다시 불러오기</button></div> : loading || !data ? <p role="status">시즌 의연록을 불러오는 중입니다.</p> : <>
+      {!loggedIn ? <section className="ledger-paper paper-texture" aria-label="시즌 의연록 로그인 안내"><header className="ledger-heading"><p className="ledger-kicker">단디보상운동 · 시즌 참여 기록</p><h2>義捐錄</h2><p className="ledger-subtitle">함께한 이들의 이름을 기록함</p></header><div className="ledger-empty"><p>로그인 후 의연록을 확인할 수 있습니다.</p><Link to="/login" state={{from:'/records'}} className="mt-6 inline-block border border-ink px-6 py-2 text-sm text-ink underline-offset-4 hover:underline">로그인하기</Link></div><footer className="ledger-footer"><span>해당 시즌 승인 실적이 있는 참여자를 소속 학교별로 한 번씩 기재합니다.</span></footer></section> : error ? <div role="alert" className="rounded-xl bg-white p-8"><p>시즌 의연록을 불러오지 못했습니다.</p><p className="mt-2 text-sm text-gray-500">{error}</p><button onClick={retry} className="mt-3 underline">다시 불러오기</button></div> : loading || !data ? <p role="status">시즌 의연록을 불러오는 중입니다.</p> : <>
         <div className="ledger-tools">
           <div><p className="text-xs font-semibold tracking-widest text-accent-deep">{data.semester_name}</p><h2 className="mt-2 font-serif text-xl font-bold text-primary">함께한 {entries.length.toLocaleString()}명의 이름</h2><p className="mt-2 text-xs text-gray-500">학교와 이름으로 찾아보세요. 한 장에 최대 {PAGE_SIZE}명을 기록합니다.</p></div>
           <div className="ledger-search"><label htmlFor="ledger-search">이름 또는 학교 검색</label><div><input id="ledger-search" type="search" maxLength={100} value={query} onChange={event=>{setQuery(event.target.value);setPage(1);}}/>{query&&<button aria-label="검색어 지우기" onClick={()=>{setQuery('');setPage(1);}}>지우기</button>}</div></div>
@@ -48,4 +52,6 @@ export function RecordsPage() {
     </div>
   </>;
 }
+
+
 
