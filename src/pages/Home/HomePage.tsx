@@ -3,7 +3,6 @@ import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {type UserContract,type League,type Mission} from '../../services/api';
 import type {Hexagon} from '../../types';
-import heritageBuilding from '../../assets/pavilion-cutout.png';
 import { container } from '../../components/common/PageHeader';
 import { RadarHex } from '../../components/common/RadarHex';
 import { CONTRIBUTION_TYPES } from '../../utils/contribution';
@@ -18,17 +17,9 @@ const features = [
 function Hero() {
   return (
     <section className="navy-texture relative overflow-hidden text-paper">
-      <div className="relative mx-auto max-w-[1600px] md:min-h-[440px] lg:min-h-[500px] xl:min-h-[550px]">
-        <div className="absolute inset-x-0 bottom-0 top-[11%] hidden md:block" aria-hidden="true">
-          <div className="absolute inset-y-0 right-0 w-[40.5%] bg-[#87372d]">
-            <div className="absolute top-6 right-8 text-right font-serif text-[10px] leading-relaxed tracking-[0.25em] text-paper/90 lg:top-8 lg:right-12">
-              DANDI<br />MOVEMENT<br />1907<span className="mt-2 ml-auto block h-px w-14 bg-paper/60" />
-            </div>
-          </div>
-        </div>
-        <img src={heritageBuilding} alt="" aria-hidden="true" className="pointer-events-none absolute right-[-3%] bottom-[-6%] z-[1] hidden h-auto w-[64%] max-w-none md:block" />
-        <div className={`${container} relative z-10 pt-16 pb-12 md:pt-[8%] md:pb-24`}>
-          <div className="relative z-10 max-w-[620px] md:w-[57%]">
+      <div className="relative mx-auto max-w-[1600px]">
+        <div className={`${container} relative z-10 py-16 md:py-24`}>
+          <div className="relative z-10 max-w-[760px]">
             <p className="text-xs tracking-[0.35em] text-paper/70 md:text-sm">DAEGU 1907 — DANDI MOVEMENT</p>
             <h1 className="mt-6 font-serif text-4xl leading-[1.2] font-bold md:text-[38px] lg:text-[46px] xl:text-[52px]">
               작은 선행이 모여,<br />우리 학교의 <span className="text-accent">자부심</span>이 되다.
@@ -40,10 +31,7 @@ function Hero() {
             </div>
           </div>
         </div>
-        <div className="relative mt-4 h-56 overflow-hidden md:hidden" aria-hidden="true">
-          <div className="absolute inset-y-0 right-0 w-3/4 bg-[#87372d]" />
-          <img src={heritageBuilding} alt="" className="absolute right-[-4%] bottom-[-6%] h-auto w-[108%] max-w-none" />
-        </div>
+
       </div>
     </section>
   );

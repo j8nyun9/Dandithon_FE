@@ -1,11 +1,13 @@
-import { ArrowRight, School, ShieldCheck, Sparkles, FileBarChart } from 'lucide-react';
+import { Fragment } from 'react';
+import './AboutPage.css';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PageHeader, container } from '../../components/common/PageHeader';
 
 const steps = [
-  { icon: Sparkles, title: '찾기', desc: '내어놓을 수 있는 것(시간·재능·헌혈)을 고르면 AI가 등록 행사를 추천합니다.' },
-  { icon: ShieldCheck, title: '인증하기', desc: '기관이 제공한 실적을 운영자가 확인합니다.' },
-  { icon: School, title: '함께 오르기', desc: '인증된 참여가 6개 유형 육각형과 단디 지수가 되어 학기 리그 순위를 만듭니다.' },
+  { title: '찾기', desc: '내어놓을 수 있는 것(시간·재능·헌혈)을 고르면 AI가 등록 행사를 추천합니다.' },
+  { title: '인증하기', desc: '기관이 제공한 실적을 운영자가 확인합니다.' },
+  { title: '함께 오르기', desc: '인증된 참여가 6개 유형 육각형과 단디 지수가 되어 학기 리그 순위를 만듭니다.' },
 ];
 
 const verifyRoadmap = [
@@ -25,13 +27,18 @@ const principles = [
   '헌혈증을 포함한 개인 증빙과 개인 이력은 공개하거나 외부에 제공하지 않습니다.',
 ];
 
+function ReadableText({ text }: { text: string }) {
+  const sentences = text.split(/(?<=[.!?])\s+/);
+  return <>{sentences.map((sentence, index) => <Fragment key={index}>{index > 0 && <br />}{sentence}</Fragment>)}</>;
+}
+
 export function AboutPage() {
   return (
-    <>
+    <div className="about-page">
       <PageHeader
         eyebrow="ABOUT"
         title="단디보상운동이란"
-        desc="각자 형편대로 할 수 있는 만큼 내어놓았던 1907년 국채보상운동의 정신을 이어, 대학생의 시간·재능·헌혈을 학교 단위 공동 성취로 모으는 AI 기반 사회공헌 리그입니다."
+        desc={"각자 형편대로 할 수 있는 만큼 내어놓았던 1907년 국채보상운동의 정신을 이어,\n대학생의 시간·재능·헌혈을 학교 단위 공동 성취로 모으는 AI 기반 사회공헌 리그입니다."}
       />
 
       <section className={`${container} grid gap-16 py-16 lg:grid-cols-2`}>
@@ -39,13 +46,13 @@ export function AboutPage() {
           <p className="text-xs font-semibold tracking-[0.3em] text-accent">SINCE 1907</p>
           <h2 className="mt-2 font-serif text-3xl font-bold text-primary">누구는 돈을, 누구는 반지를</h2>
           <p className="mt-6 leading-relaxed text-gray-600">
-            1907년 대구에서 시작된 국채보상운동에는 형편이 서로 다른 많은 이들이 함께했습니다. 누구는 돈을, 누구는 끼던
-            반지와 비녀를 내놓았습니다. 얼마를 냈느냐보다 각자 할 수 있는 만큼 내어놓았다는 사실이 이 운동의 힘이었고, 그
+            1907년 대구에서 시작된 국채보상운동에는 형편이 서로 다른 많은 이들이 함께했습니다.<br />누구는 돈을, 누구는 끼던
+            반지와 비녀를 내놓았습니다.<br />얼마를 냈느냐보다 각자 할 수 있는 만큼 내어놓았다는 사실이 이 운동의 힘이었고, 그
             기록은 유네스코 세계기록유산으로 남았습니다.
           </p>
           <p className="mt-4 leading-relaxed text-gray-600">
-            단디보상운동은 이 원리를 오늘의 대학생에게 잇습니다. 지금 우리가 내어놓을 수 있는 것은 시간과 재능, 그리고
-            헌혈입니다. ‘단디’는 ‘단단히, 제대로’라는 경상도 말로, 작은 참여도 단디 기록해 학교의 이름으로 쌓아 갑니다.
+            단디보상운동은 이 원리를 오늘의 대학생에게 잇습니다.<br />지금 우리가 내어놓을 수 있는 것은 시간과 재능, 그리고
+            헌혈입니다.<br />‘단디’는 ‘단단히, 제대로’라는 경상도 말로, 작은 참여도 단디 기록해 학교의 이름으로 쌓아 갑니다.
           </p>
         </div>
         <div className="paper-texture rounded-xl border border-paper-deep p-6">
@@ -54,7 +61,7 @@ export function AboutPage() {
             {principles.map((p, i) => (
               <li key={p} className="flex gap-4 text-sm text-ink">
                 <span className="font-serif text-lg font-black text-accent-deep">{String(i + 1).padStart(2, '0')}</span>
-                {p}
+                <span className="min-w-0"><ReadableText text={p} /></span>
               </li>
             ))}
           </ol>
@@ -65,12 +72,11 @@ export function AboutPage() {
         <div className={`${container} py-16`}>
           <h2 className="text-center font-serif text-3xl font-bold text-primary">이렇게 참여해요</h2>
           <div className="mt-8 grid gap-6 md:grid-cols-3">
-            {steps.map(({ icon: Icon, title, desc }, i) => (
+            {steps.map(({ title, desc }, i) => (
               <div key={title} className="rounded-xl border border-gray-200 p-6">
                 <p className="font-serif text-sm text-accent">STEP {i + 1}</p>
-                <Icon size={28} className="mt-4 text-primary" />
                 <p className="mt-4 text-lg font-bold text-primary">{title}</p>
-                <p className="mt-2 text-sm text-gray-600">{desc}</p>
+                <p className="mt-2 text-sm text-gray-600"><ReadableText text={desc} /></p>
               </div>
             ))}
           </div>
@@ -94,20 +100,19 @@ export function AboutPage() {
                 {v.phase}
               </span>
               <p className={`mt-4 text-lg font-bold ${i === 0 ? '' : 'text-primary'}`}>{v.title}</p>
-              <p className={`mt-2 text-sm ${i === 0 ? 'text-paper/75' : 'text-gray-600'}`}>{v.desc}</p>
+              <p className={`mt-2 text-sm ${i === 0 ? 'text-paper/75' : 'text-gray-600'}`}><ReadableText text={v.desc} /></p>
             </li>
           ))}
         </ol>
       </section>
 
       <section className={`${container} py-16`}>
-        <div className="grid items-center gap-6 rounded-xl border border-gray-200 bg-white p-6 md:grid-cols-[auto_1fr_auto] md:p-8">
-          <FileBarChart size={40} className="text-accent-deep" />
+        <div className="grid items-center gap-6 rounded-xl border border-gray-200 bg-white p-6 md:grid-cols-[1fr_auto] md:p-8">
           <div>
             <p className="text-xs font-semibold tracking-[0.3em] text-accent">FOR PARTNERS</p>
             <h3 className="mt-1 text-xl font-bold text-primary">기관·기업 파트너를 위한 성과 리포트와 참여 인사이트</h3>
             <p className="mt-2 text-sm text-gray-600">
-              검증된 성과와 함께, 대학생이 어떤 활동에 관심을 갖고 어디서 멈추는지 익명 집계로 제공합니다. 개인 식별 정보와
+              검증된 성과와 함께, 대학생이 어떤 활동에 관심을 갖고 어디서 멈추는지 익명 집계로 제공합니다.<br />개인 식별 정보와
               개인별 이력은 제공하지 않습니다.
             </p>
           </div>
@@ -116,6 +121,6 @@ export function AboutPage() {
           </Link>
         </div>
       </section>
-    </>
+    </div>
   );
 }

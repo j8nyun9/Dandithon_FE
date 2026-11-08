@@ -1,0 +1,2 @@
+/* Only line wrapping on the About page; wording and visual styling stay intact. */
+.about-page p,.about-page li,.about-page h1,.about-page h2,.about-page h3{word-break:keep-all;overflow-wrap:anywhere}.about-page h1,.about-page h2,.about-page h3{text-wrap:balance}.about-page p{text-wrap:pretty}.about-page>section:first-child p:last-child{white-space:pre-line}.about-page li>span:first-child{flex-shrink:0}.about-page a{word-break:keep-all}
