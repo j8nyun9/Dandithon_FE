@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { session, setSession } from '../../services/api';
-import { Menu, X } from 'lucide-react';
+
 import { Link, NavLink } from 'react-router-dom';
 
 export const navItems = [
@@ -29,7 +29,7 @@ export function Logo({ light = true }: { light?: boolean }) {
 }
 
 export function Header() {
-  const [open, setOpen] = useState(false);
+
   const [current, setCurrent] = useState(session());
   useEffect(() => { const update = () => setCurrent(session()); window.addEventListener('dandi-session', update); return () => window.removeEventListener('dandi-session', update); }, []);
 
@@ -62,29 +62,8 @@ export function Header() {
 
         <div className="flex shrink-0 items-center gap-2">
           {current ? <button onClick={() => setSession(null)} className="shrink-0 whitespace-nowrap rounded-md bg-paper px-3 py-2 text-sm font-semibold text-primary">로그아웃<span className="hidden lg:inline"> ({current.name || current.role})</span></button> : <Link to="/login" className="shrink-0 whitespace-nowrap rounded-md bg-paper px-3 py-2 text-sm font-semibold text-primary">로그인</Link>}
-          <button aria-label="메뉴" aria-expanded={open} className="shrink-0 p-2 text-paper md:hidden" onClick={() => setOpen(o => !o)}>
-            {open ? <X size={20} /> : <Menu size={20} />}
-          </button>
         </div>
       </div>
-
-      {open && (
-        <nav className="border-t border-white/10 px-6 pb-4 md:hidden">
-          {navItems.map(n => (
-            <NavLink
-              key={n.to}
-              to={n.to}
-              end={n.to === '/'}
-              onClick={() => setOpen(false)}
-              className={({ isActive }) =>
-                `block whitespace-nowrap border-b border-white/10 py-4 text-sm ${isActive ? 'font-semibold text-accent' : 'text-paper/80'}`
-              }
-            >
-              {n.label}
-            </NavLink>
-          ))}
-        </nav>
-      )}
     </header>
   );
 }
