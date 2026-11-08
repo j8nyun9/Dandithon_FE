@@ -7,7 +7,6 @@ export const navItems = [
   { to: '/', label: '홈' },
   { to: '/activities', label: '활동하기' },
   { to: '/league', label: '대학 리그' },
-  { to: '/awards', label: '시상' },
   { to: '/records', label: '의연록' },
   { to: '/about', label: '소개' },
 ];
@@ -91,3 +90,4 @@ export function Header() {
     </header>
   );
 }
+

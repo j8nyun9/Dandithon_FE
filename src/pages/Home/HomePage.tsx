@@ -1,5 +1,5 @@
 import {useEffect,useState} from 'react';
-import { ArrowRight, BarChart3, Trophy, BookOpen, Leaf } from 'lucide-react';
+import { ArrowRight, BarChart3, BookOpen, Leaf, Info } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {api,session,type League,type Mission} from '../../services/api';
 import type {Hexagon} from '../../types';
@@ -10,9 +10,9 @@ import { CONTRIBUTION_TYPES } from '../../utils/contribution';
 
 const features = [
   { icon: BarChart3, title: '대학 리그', desc: '학기 단위 학교 간 선의 경쟁', to: '/league' },
-  { icon: Trophy, title: '다양한 시상', desc: '중간·최종결산, 유형별 부문상', to: '/awards' },
   { icon: BookOpen, title: '디지털 의연록', desc: '내어놓은 것을 기록으로', to: '/records' },
   { icon: Leaf, title: 'AI 활동 추천', desc: '내 시간과 재능에 맞는 활동', to: '/activities' },
+  { icon: Info, title: '서비스 소개', desc: '단디보상운동의 시작과 참여 방법', to: '/about' },
 ];
 
 function Hero() {
@@ -152,3 +152,5 @@ export function HomePage() {
     </>
   );
 }
+
+
