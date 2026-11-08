@@ -1,5 +1,5 @@
 import { useHomeData } from '../../hooks/useHomeData';
-import { ArrowRight, BarChart3, BookOpen, Leaf, Info } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {type UserContract,type League,type Mission} from '../../services/api';
 import type {Hexagon} from '../../types';
@@ -9,10 +9,10 @@ import { RadarHex } from '../../components/common/RadarHex';
 import { CONTRIBUTION_TYPES } from '../../utils/contribution';
 
 const features = [
-  { icon: BarChart3, title: '대학 리그', desc: '학기 단위 학교 간 선의 경쟁', to: '/league' },
-  { icon: BookOpen, title: '디지털 의연록', desc: '내어놓은 것을 기록으로', to: '/records' },
-  { icon: Leaf, title: 'AI 활동 추천', desc: '내 시간과 재능에 맞는 활동', to: '/activities' },
-  { icon: Info, title: '서비스 소개', desc: '단디보상운동의 시작과 참여 방법', to: '/about' },
+  { title: '대학 리그', desc: '학기 단위 학교 간 선의 경쟁', to: '/league' },
+  { title: '디지털 의연록', desc: '내어놓은 것을 기록으로', to: '/records' },
+  { title: 'AI 활동 추천', desc: '내 시간과 재능에 맞는 활동', to: '/activities' },
+  { title: '마이페이지', desc: '내 정보와 봉사활동 이력', to: '/my' },
 ];
 
 function Hero() {
@@ -53,13 +53,13 @@ function FeatureStrip() {
   return (
     <section className="paper-texture border-b border-paper-deep">
       <div className={`${container} grid grid-cols-2 md:grid-cols-4`}>
-        {features.map(({ icon: Icon, title, desc, to }, i) => (
+        {features.map(({ title, desc, to }, i) => (
           <Link
             key={title}
             to={to}
             className={`group flex items-center gap-4 py-6 md:px-6 ${i > 0 ? 'md:border-l md:border-paper-deep' : ''}`}
           >
-            <Icon size={28} strokeWidth={1.6} className="shrink-0 text-accent-deep" />
+            
             <div>
               <p className="font-bold text-ink group-hover:text-accent-deep">{title}</p>
               <p className="text-xs text-gray-500">{desc}</p>
@@ -96,11 +96,12 @@ function LeagueSection() {
 }
 
 function ProjectSection() {
- type CommunityProgress={completed_count:number;target_count:number;total_contribution:number;active_categories:number};
+ type CommunityProgress={semester_id:number;completed_count:number;target_count:number;total_contribution:number;active_categories:number};
  const {data:progress,error,retry}=useHomeData<CommunityProgress>('/community-progress');
+ const participants=useHomeData<{participants:{school_id:number;name:string}[]}>(progress?`/ledger?semester_id=${progress.semester_id}`:null);
  const percent=progress&&progress.target_count>0?Math.max(0,Math.min(100,Math.round(progress.completed_count/progress.target_count*100))):0;
- const values=progress?[['확인 완료',`${progress.completed_count}건`],['함께한 분야',`${progress.active_categories}개`],['인정 활동',`${progress.total_contribution}회`]]:[];
- return <section className="paper-texture border-y border-paper-deep"><div className={`${container} grid gap-6 py-16 lg:grid-cols-2`}><div><SectionHead eyebrow="COMMUNITY PROJECT" title="함께 이루는 공동 목표"/><p className="text-lg font-semibold text-ink">이번 학기 활동 완료 {progress?`${progress.target_count}건`:''} 목표</p>{error?<div role="alert" className="mt-4 text-sm text-red-700"><p>{error}</p><button className="mt-2 underline" onClick={retry}>다시 시도</button></div>:!progress?<p className="mt-4 text-sm text-gray-500">참여 현황을 불러오는 중입니다.</p>:<><div className="mt-4 h-4 overflow-hidden rounded-full bg-paper-deep" role="progressbar" aria-label="활동 완료 목표 진행률" aria-valuemin={0} aria-valuemax={progress.target_count} aria-valuenow={Math.min(progress.completed_count,progress.target_count)}><div className="h-full rounded-full bg-accent" style={{width:`${percent}%`}}/></div><div className="mt-2 flex justify-between text-sm text-gray-600"><span>{progress.completed_count} / {progress.target_count}건</span><span className="font-bold text-accent-deep">{percent}% 달성</span></div></>}<p className="mt-6 font-serif text-sm leading-relaxed text-ink/80">1907년 각자의 형편대로 함께했던 마음처럼, 오늘 우리는 시간과 재능으로 함께합니다.</p></div><div className="flex flex-col justify-end"><h3 className="mb-4 font-bold text-primary">이번 시즌 함께한 실천</h3>{progress&&<div className="grid gap-4 sm:grid-cols-3">{values.map(([label,value])=><div key={label} className="rounded-xl border border-paper-deep bg-white/70 p-4"><p className="font-serif font-bold text-accent-deep">{label}</p><p className="mt-2 text-2xl font-bold text-primary">{value}</p></div>)}</div>}<p className="mt-4 text-xs text-gray-500">관리자가 확인한 완료 실적 기준입니다. 헌혈 관련 활동은 개인정보 보호를 위해 이 집계에서 제외합니다.</p></div></div></section>;
+ const values=progress?[['승인 완료 활동',`${progress.completed_count}건`],['참여 분야',`${progress.active_categories}개`],['참여 학생',participants.error?'조회 실패':participants.data?`${participants.data.participants.length}명`:'조회 중']]:[];
+ return <section className="paper-texture border-y border-paper-deep"><div className={`${container} grid gap-6 py-16 lg:grid-cols-2`}><div><SectionHead eyebrow="COMMUNITY PROJECT" title="함께 이루는 공동 목표"/><p className="text-lg font-semibold text-ink">이번 학기 활동 완료 {progress?`${progress.target_count}건`:''} 목표</p>{error?<div role="alert" className="mt-4 text-sm text-red-700"><p>{error}</p><button className="mt-2 underline" onClick={retry}>다시 시도</button></div>:!progress?<p className="mt-4 text-sm text-gray-500">참여 현황을 불러오는 중입니다.</p>:<><div className="mt-4 h-4 overflow-hidden rounded-full bg-paper-deep" role="progressbar" aria-label="활동 완료 목표 진행률" aria-valuemin={0} aria-valuemax={progress.target_count} aria-valuenow={Math.min(progress.completed_count,progress.target_count)}><div className="h-full rounded-full bg-accent" style={{width:`${percent}%`}}/></div><div className="mt-2 flex justify-between text-sm text-gray-600"><span>{progress.completed_count} / {progress.target_count}건</span><span className="font-bold text-accent-deep">{percent}% 달성</span></div></>}<p className="mt-6 font-serif text-sm leading-relaxed text-ink/80">1907년 각자의 형편대로 함께했던 마음처럼, 오늘 우리는 시간과 재능으로 함께합니다.</p></div><div className="flex flex-col justify-end"><h3 className="mb-4 font-bold text-primary">이번 시즌 함께한 실천</h3>{progress&&<div className="grid gap-4 sm:grid-cols-3">{values.map(([label,value])=><div key={label} className="rounded-xl border border-paper-deep bg-white/70 p-4"><p className="font-serif font-bold text-accent-deep">{label}</p><p className="mt-2 text-2xl font-bold text-primary">{value}</p></div>)}</div>}<div className="mt-4 space-y-0 text-xs leading-snug text-gray-500">{participants.error&&<p><button onClick={participants.retry} className="underline">참여 학생 수 다시 조회</button></p>}<p>승인 완료 활동과 참여 분야는 관리자가 확인한 실적을 기준으로 하며, 헌혈 관련 활동은 제외합니다.</p><p>참여 학생 수는 해당 시즌 의연록을 기준으로 합니다.</p></div></div></div></section>;
 }
 
 function ActivitySection() {
@@ -117,7 +118,7 @@ function CtaBanner() {
           당신이 내어놓을 수 있는 것은 <span className="text-accent">무엇인가요?</span>
         </h2>
         <p className="mt-4 text-paper/75">
-          한 학기에 한 번이어도 충분합니다. 여러 차시로 이어지는 활동도 한 번의 참여로 인정합니다.
+          작은 실천부터 시작해 보세요. 함께한 활동은 우리 학교의 기록으로 남습니다.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-4">
           <Link
@@ -150,5 +151,15 @@ export function HomePage() {
     </>
   );
 }
+
+
+
+
+
+
+
+
+
+
 
 
