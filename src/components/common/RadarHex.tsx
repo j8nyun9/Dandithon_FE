@@ -43,19 +43,18 @@ export function RadarHex({ values, compare, max = 70, tone = 'light', labels = t
       {compare && (
         <polygon
           points={poly(compare)}
-          className={dark ? 'fill-none stroke-paper/50' : 'fill-none stroke-gray-400'}
+          className="fill-none stroke-primary"
           strokeWidth="1.5"
-          strokeDasharray="4 4"
         />
       )}
       <polygon
         points={poly(values)}
-        className={dark ? 'fill-accent/35 stroke-accent' : 'fill-primary/20 stroke-primary'}
+        className={dark ? 'fill-accent/35 stroke-accent' : 'fill-accent/20 stroke-accent'}
         strokeWidth="2"
       />
       {CONTRIBUTION_TYPES.map((t, i) => {
         const [x, y] = pt(i, safeValue(values[t.key]));
-        return <circle key={t.key} cx={x} cy={y} r="3.5" className={dark ? 'fill-accent' : 'fill-primary'} />;
+        return <circle key={t.key} cx={x} cy={y} r="3.5" className="fill-accent" />;
       })}
       {labels &&
         CONTRIBUTION_TYPES.map((t, i) => {

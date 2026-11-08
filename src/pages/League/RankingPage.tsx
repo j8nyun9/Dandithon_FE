@@ -60,7 +60,7 @@ export function RankingPage() {
             {selectedSchool.overall === null ? <p className="mt-6 text-sm text-gray-500">재학생 수가 확인되면 순위와 분야별 환산 수치를 표시합니다.</p> : <>
               <div className="mt-5 flex flex-wrap gap-2" aria-label="그래프 눈금 선택">{[{label:'확대 보기',value:true},{label:'1 기준 보기',value:false}].map(option=><button key={option.label} aria-pressed={zoomed===option.value} onClick={()=>setZoomed(option.value)} className={`rounded border px-3 py-2 text-xs ${zoomed===option.value?'border-primary bg-primary text-paper':'border-gray-200 text-primary'}`}>{option.label}</button>)}</div>
               <p className="mt-3 text-xs text-accent-deep" role="status">{zoomed?'현재 실적을 확대해서 비교합니다.':'최대 눈금을 최소 1로 표시합니다.'} 최대 눈금 {number(axisMax)}건 / 재학생 1,000명</p>
-              <div className="mt-4 text-right text-xs text-gray-500"><p>━ 선택 학교</p><p>┄ 산정 가능한 학교 평균</p></div>
+              <div className="mt-4 text-right text-xs text-gray-500"><p className="text-accent">━ 선택 학교</p><p className="text-primary">━ 산정 가능한 학교 평균</p></div>
               <RadarHex values={selectedSchool.axes as Hexagon} compare={average} max={axisMax} valueDecimals={4} valueSuffix="" className="mx-auto mt-4 w-full max-w-sm" />
               <ul className="mt-4 grid grid-cols-2 gap-2 text-xs">{CONTRIBUTION_TYPES.map(t => <li key={t.key} className="flex justify-between gap-2 rounded-md bg-gray-50 px-2 py-1"><span>{t.label}</span><span className="font-semibold text-primary">{number(selectedSchool.axes[t.key])}</span></li>)}</ul>
               <p className="mt-4 text-xs text-gray-400">학교 평균은 미산정 학교를 제외한 {measured.length}개교의 단순 평균입니다. 모든 학교에 같은 눈금을 적용하며 보기 전환은 실제 수치나 순위를 바꾸지 않습니다. 수치는 백분율이 아닌 재학생 1,000명당 분야별 승인 실적입니다.</p>
