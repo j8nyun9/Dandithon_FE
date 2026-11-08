@@ -36,7 +36,7 @@ export function MobileNavigation() {
       aria-label="모바일 하단 메뉴"
       aria-hidden={hidden}
       inert={hidden}
-      className={`fixed inset-x-0 bottom-0 z-40 border-t border-paper-deep bg-paper/95 pb-[env(safe-area-inset-bottom)] text-primary shadow-[0_-4px_18px_rgb(0_0_0/0.08)] backdrop-blur transition-transform duration-200 motion-reduce:transition-none md:hidden ${hidden ? 'translate-y-full' : 'translate-y-0'}`}
+      className={`fixed inset-x-0 bottom-0 z-40 border-t border-white/15 bg-primary/95 pb-[env(safe-area-inset-bottom)] text-paper shadow-[0_-4px_18px_rgb(0_0_0/0.08)] backdrop-blur transition-transform duration-200 motion-reduce:transition-none md:hidden ${hidden ? 'translate-y-full' : 'translate-y-0'}`}
     >
       <div className="grid h-16 grid-cols-6">
         {navItems.map(item => (
@@ -44,7 +44,7 @@ export function MobileNavigation() {
             key={item.to}
             to={item.to}
             end={item.to === '/'}
-            className={({ isActive }) => `flex min-w-0 items-center justify-center whitespace-nowrap border-t-2 text-[clamp(10px,2.6vw,12px)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-accent ${isActive ? 'border-accent font-bold text-accent' : 'border-transparent text-primary/75'}`}
+            className={({ isActive }) => `flex min-w-0 items-center justify-center whitespace-nowrap border-t-2 text-[clamp(11px,3vw,13px)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-accent ${isActive ? 'border-accent font-bold text-accent' : 'border-transparent text-paper/85'}`}
           >
             {item.label}
           </NavLink>
